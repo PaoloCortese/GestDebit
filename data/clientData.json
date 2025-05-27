@@ -1,21 +1,10 @@
 {
   "clientData": {
     "RM1FC": {
-      "stato": "attivo",
-      "lastModified": "27/05/2025, 23:13"
-    },
-    "LTHCP": {
-      "stato": "attivo",
-      "lastModified": "27/05/2025, 23:13"
-    },
-    "RMHLM": {
-      "stato": "attivo",
-      "lastModified": "27/05/2025, 23:13"
-    },
-    "RM1SD": {
-      "stato": "attivo",
-      "lastModified": "27/05/2025, 23:13"
+      "affiliato": "Claudio Professo Castelverde ",
+      "lastModified": "27/05/2025, 23:11",
+      "note": "Deve bonificare"
     }
   },
-  "lastSync": "2025-05-27T21:16:27.264Z"
+  "lastSync": "2025-05-27T21:16:41.773Z"
 }
