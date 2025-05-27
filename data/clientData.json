@@ -1,4 +1,21 @@
 {
-  "clientData": {},
-  "lastSync": "2025-05-27T21:11:36.532Z"
+  "clientData": {
+    "RM1FC": {
+      "stato": "attivo",
+      "lastModified": "27/05/2025, 23:13"
+    },
+    "LTHCP": {
+      "stato": "attivo",
+      "lastModified": "27/05/2025, 23:13"
+    },
+    "RMHLM": {
+      "stato": "attivo",
+      "lastModified": "27/05/2025, 23:13"
+    },
+    "RM1SD": {
+      "stato": "attivo",
+      "lastModified": "27/05/2025, 23:13"
+    }
+  },
+  "lastSync": "2025-05-27T21:16:27.264Z"
 }
