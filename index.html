@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Solleciti Debiti</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/lucide-static@0.263.1/font/lucide.css">
+    <style>
+        .lucide { width: 1.25rem; height: 1.25rem; }
+        .lucide-4 { width: 1rem; height: 1rem; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const DebtManagementApp = () => {
+            const [data, setData] = useState([]);
+            const [filteredData, setFilteredData] = useState([]);
+            const [searchTerm, setSearchTerm] = useState('');
+            const [searchType, setSearchType] = useState('bdti');
+            const [statusFilter, setStatusFilter] = useState('tutti');
+            const [currentFile, setCurrentFile] = useState(null);
+            const [copied, setCopied] = useState(false);
+            const [selectedDebtor, setSelectedDebtor] = useState(null);
+            const [clientData, setClientData] = useState({});
+            const [showAllNotes, setShowAllNotes] = useState(false);
+            const [githubToken, setGithubToken] = useState('');
+            const [showTokenInput, setShowTokenInput] = useState(false);
+            const [syncing, setSyncing] = useState(false);
+            const [lastSync, setLastSync] = useState(null);
+
+            // GitHub config
+            const GITHUB_OWNER = 'PaoloCortese';
+            const GITHUB_REPO = 'GestDebit';
+            const DATA_FILE_PATH = 'data/clientData.json';
+
+            // Carica dati salvati all'avvio
+            useEffect(() => {
+                const savedClientData = localStorage.getItem('clientData');
+                if (savedClientData) {
+                    setClientData(JSON.parse(savedClientData));
+                }
+                
+                const savedToken = localStorage.getItem('githubToken');
+                if (savedToken) {
+                    setGithubToken(savedToken);
+                }
+                
+                const savedLastSync = localStorage.getItem('lastSync');
+                if (savedLastSync) {
+                    setLastSync(savedLastSync);
+                }
+            }, []);
+
+            // Salva dati cliente quando cambiano
+            useEffect(() => {
+                if (Object.keys(clientData).length > 0) {
+                    localStorage.setItem('clientData', JSON.stringify(clientData));
+                }
+            }, [clientData]);
+
+            // Applica filtri quando cambiano
+            useEffect(() => {
+                applyFilters();
+            }, [data, searchTerm, searchType, statusFilter]);
+
+            // Funzione per applicare tutti i filtri
+            const applyFilters = () => {
+                let filtered = [...data];
+                
+                // Filtro per stato
+                if (statusFilter !== 'tutti') {
+                    filtered = filtered.filter(item => {
+                        const stato = clientData[item.bdti]?.stato || 'attivo';
+                        return stato === statusFilter;
+                    });
+                }
+                
+                // Filtro per ricerca
+                if (searchTerm) {
+                    filtered = filtered.filter(item => {
+                        const searchLower = searchTerm.toLowerCase();
+                        const affiliato = clientData[item.bdti]?.affiliato?.toLowerCase() || '';
+                        
+                        switch (searchType) {
+                            case 'bdti':
+                                return item.bdti.toLowerCase().includes(searchLower);
+                            case 'ragioneSociale':
+                                return item.ragioneSociale.toLowerCase().includes(searchLower);
+                            case 'teamManager':
+                                return item.nomeTeamManager.toLowerCase().includes(searchLower);
+                            case 'affiliato':
+                                return affiliato.includes(searchLower);
+                            default:
+                                return false;
+                        }
+                    });
+                }
+                
+                setFilteredData(filtered);
+            };
+
+            // Sincronizza con GitHub
+            const syncWithGitHub = async (action = 'both') => {
+                if (!githubToken) {
+                    setShowTokenInput(true);
+                    return;
+                }
+                
+                setSyncing(true);
+                
+                try {
+                    if (action === 'download' || action === 'both') {
+                        // Scarica da GitHub
+                        const response = await fetch(
+                            `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`,
+                            {
+                                headers: {
+                                    'Authorization': `token ${githubToken}`,
+                                    'Accept': 'application/vnd.github.v3+json'
+                                }
+                            }
+                        );
+                        
+                        if (response.ok) {
+                            const file = await response.json();
+                            const content = JSON.parse(atob(file.content));
+                            
+                            if (content.clientData) {
+                                setClientData(content.clientData);
+                                localStorage.setItem('clientData', JSON.stringify(content.clientData));
+                            }
+                        }
+                    }
+                    
+                    if (action === 'upload' || action === 'both') {
+                        // Carica su GitHub
+                        const dataToSave = {
+                            clientData: clientData,
+                            lastSync: new Date().toISOString()
+                        };
+                        
+                        // Prima ottieni il file attuale per avere lo SHA
+                        const currentFileResponse = await fetch(
+                            `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`,
+                            {
+                                headers: {
+                                    'Authorization': `token ${githubToken}`,
+                                    'Accept': 'application/vnd.github.v3+json'
+                                }
+                            }
+                        );
+                        
+                        let sha = '';
+                        if (currentFileResponse.ok) {
+                            const currentFile = await currentFileResponse.json();
+                            sha = currentFile.sha;
+                        }
+                        
+                        // Aggiorna il file
+                        const updateResponse = await fetch(
+                            `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`,
+                            {
+                                method: 'PUT',
+                                headers: {
+                                    'Authorization': `token ${githubToken}`,
+                                    'Accept': 'application/vnd.github.v3+json',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    message: `Sync data - ${new Date().toLocaleString('it-IT')}`,
+                                    content: btoa(JSON.stringify(dataToSave, null, 2)),
+                                    sha: sha || undefined
+                                })
+                            }
+                        );
+                        
+                        if (updateResponse.ok) {
+                            const syncTime = new Date().toLocaleString('it-IT');
+                            setLastSync(syncTime);
+                            localStorage.setItem('lastSync', syncTime);
+                        }
+                    }
+                    
+                    alert('Sincronizzazione completata!');
+                } catch (error) {
+                    console.error('Errore sincronizzazione:', error);
+                    alert('Errore durante la sincronizzazione. Verifica il token e riprova.');
+                } finally {
+                    setSyncing(false);
+                }
+            };
+
+            // Salva token GitHub
+            const saveGitHubToken = (token) => {
+                setGithubToken(token);
+                localStorage.setItem('githubToken', token);
+                setShowTokenInput(false);
+                syncWithGitHub();
+            };
+
+            // Gestione upload file
+            const handleFileUpload = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data);
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    const formattedData = [];
+                    for (let i = 2; i < jsonData.length; i++) {
+                        if (jsonData[i][0]) {
+                            formattedData.push({
+                                nomeConsulente: jsonData[i][0] || '',
+                                nomeAreaManager: jsonData[i][1] || '',
+                                nomeTeamManager: jsonData[i][2] || '',
+                                bdti: jsonData[i][3] || '',
+                                ragioneSociale: jsonData[i][4] || '',
+                                documento: jsonData[i][5] || '',
+                                dataDocumento: jsonData[i][6] || '',
+                                dataScadenza: jsonData[i][7] || '',
+                                debito: parseFloat(jsonData[i][8]) || 0,
+                                codPagamento: jsonData[i][9] || '',
+                                note: jsonData[i][10] || ''
+                            });
+                        }
+                    }
+                    
+                    setData(formattedData);
+                    setCurrentFile(file.name);
+                };
+                reader.readAsArrayBuffer(file);
+            };
+
+            // Elimina tutti i dati
+            const handleClearData = () => {
+                if (window.confirm('Sei sicuro di voler eliminare tutti i dati del foglio Excel? I dati dei clienti rimarranno salvati.')) {
+                    setData([]);
+                    setFilteredData([]);
+                    setCurrentFile(null);
+                    setSelectedDebtor(null);
+                }
+            };
+
+            // Salva dati cliente per BDTI
+            const handleClientDataChange = (bdti, field, value) => {
+                const updatedData = { 
+                    ...clientData,
+                    [bdti]: {
+                        ...clientData[bdti],
+                        [field]: value,
+                        lastModified: new Date().toLocaleString('it-IT', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })
+                    }
+                };
+                setClientData(updatedData);
+            };
+
+            // Elimina dati cliente specifici
+            const handleDeleteClientData = (bdti) => {
+                if (window.confirm('Sei sicuro di voler eliminare tutti i dati di questo cliente?')) {
+                    const updatedData = { ...clientData };
+                    delete updatedData[bdti];
+                    setClientData(updatedData);
+                }
+            };
+
+            // Esporta tutti i dati in JSON
+            const exportAllData = () => {
+                const exportData = {
+                    clientData: clientData,
+                    exportDate: new Date().toISOString(),
+                    version: '3.0'
+                };
+                
+                const dataStr = JSON.stringify(exportData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                const exportFileDefaultName = `dati_clienti_${new Date().toISOString().slice(0,10)}.json`;
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            };
+
+            // Importa dati da JSON
+            const handleDataImport = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        
+                        if (importedData.clientData) {
+                            setClientData(importedData.clientData);
+                        }
+                        
+                        alert('Dati importati con successo!');
+                    } catch (error) {
+                        alert('Errore nell\'importazione del file.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+
+            // Genera testo WhatsApp
+            const generateWhatsAppText = (debtor) => {
+                const allDocuments = data.filter(item => item.bdti === debtor.bdti);
+                const totalDebt = allDocuments.reduce((sum, item) => sum + (parseFloat(item.debito) || 0), 0);
+                const affiliato = clientData[debtor.bdti]?.affiliato;
+                const stato = clientData[debtor.bdti]?.stato || 'attivo';
+                
+                let text = `Ciao l'amministrazione ti ha scritto in merito all'insoluto una mail con il dettaglio del dovuto\n\n`;
+                text += `*Cliente:* ${debtor.ragioneSociale}\n`;
+                text += `*Codice BDTI:* ${debtor.bdti}\n`;
+                if (affiliato) {
+                    text += `*Affiliato:* ${affiliato}\n`;
+                }
+                text += `*Stato:* ${stato === 'sospeso' ? '🔴 SOSPESO' : '🟢 ATTIVO'}\n`;
+                text += `*Dettaglio documenti scaduti:*\n`;
+                
+                allDocuments.forEach(doc => {
+                    text += `• Doc. ${doc.documento} del ${doc.dataDocumento} - € ${doc.debito.toFixed(2)}\n`;
+                });
+                
+                text += `\n*TOTALE DEBITO: € ${totalDebt.toFixed(2)}*\n\n`;
+                text += `mi fai sapere come regolarci per il saldo!! Se non mi dai riscontro a breve scatta la sospensione definitiva.`;
+                
+                return text;
+            };
+
+            // Copia testo WhatsApp
+            const copyToClipboard = (debtor) => {
+                const text = generateWhatsAppText(debtor);
+                navigator.clipboard.writeText(text).then(() => {
+                    setCopied(true);
+                    setSelectedDebtor(debtor.bdti);
+                    setTimeout(() => {
+                        setCopied(false);
+                        setSelectedDebtor(null);
+                    }, 2000);
+                });
+            };
+
+            // Raggruppa i dati per BDTI
+            const groupedData = filteredData.reduce((acc, item) => {
+                if (!acc[item.bdti]) {
+                    acc[item.bdti] = {
+                        ...item,
+                        documents: [],
+                        totalDebt: 0
+                    };
+                }
+                acc[item.bdti].documents.push(item);
+                acc[item.bdti].totalDebt += parseFloat(item.debito) || 0;
+                return acc;
+            }, {});
+
+            // Conta stati
+            const countStates = () => {
+                const counts = { attivi: 0, sospesi: 0 };
+                Object.keys(groupedData).forEach(bdti => {
+                    const stato = clientData[bdti]?.stato || 'attivo';
+                    if (stato === 'sospeso') counts.sospesi++;
+                    else counts.attivi++;
+                });
+                return counts;
+            };
+
+            const stateCounts = countStates();
+
+            return (
+                <div className="min-h-screen bg-gray-100 p-4">
+                    <div className="max-w-7xl mx-auto">
+                        {/* Header */}
+                        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                            <h1 className="text-3xl font-bold text-gray-800 mb-4">
+                                Gestione Solleciti Debiti
+                            </h1>
+                            
+                            {/* File Management */}
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center space-x-4">
+                                    <label className="flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition">
+                                        <i className="lucide lucide-upload"></i>
+                                        <span>Carica Excel</span>
+                                        <input
+                                            type="file"
+                                            accept=".xlsx,.xls"
+                                            onChange={handleFileUpload}
+                                            className="hidden"
+                                        />
+                                    </label>
+                                    
+                                    {currentFile && (
+                                        <>
+                                            <div className="flex items-center space-x-2 text-gray-600">
+                                                <i className="lucide lucide-file-spreadsheet"></i>
+                                                <span>{currentFile}</span>
+                                            </div>
+                                            
+                                            <button
+                                                onClick={handleClearData}
+                                                className="flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                                            >
+                                                <i className="lucide lucide-trash-2"></i>
+                                                <span>Elimina Dati</span>
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                                
+                                <div className="flex items-center space-x-2">
+                                    <button
+                                        onClick={() => syncWithGitHub()}
+                                        className={`flex items-center space-x-2 ${syncing ? 'bg-gray-400' : 'bg-purple-500 hover:bg-purple-600'} text-white px-3 py-2 rounded-lg transition text-sm`}
+                                        disabled={syncing}
+                                    >
+                                        <i className={`lucide lucide-4 ${syncing ? 'lucide-loader-2 animate-spin' : 'lucide-refresh-cw'}`}></i>
+                                        <span>{syncing ? 'Sincronizzando...' : 'Sincronizza'}</span>
+                                    </button>
+                                    
+                                    <button
+                                        onClick={exportAllData}
+                                        className="flex items-center space-x-2 bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 transition text-sm"
+                                    >
+                                        <i className="lucide lucide-4 lucide-download"></i>
+                                        <span>Esporta</span>
+                                    </button>
+                                    
+                                    <label className="flex items-center space-x-2 bg-blue-500 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition text-sm">
+                                        <i className="lucide lucide-4 lucide-file-text"></i>
+                                        <span>Importa</span>
+                                        <input
+                                            type="file"
+                                            accept=".json"
+                                            onChange={handleDataImport}
+                                            className="hidden"
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* Sync Info */}
+                            {lastSync && (
+                                <div className="text-sm text-gray-600 mb-4">
+                                    Ultima sincronizzazione: {lastSync}
+                                </div>
+                            )}
+
+                            {/* Filters */}
+                            <div className="flex space-x-4 mb-4">
+                                {/* Status Filter */}
+                                <div className="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg">
+                                    <span className="text-sm font-medium text-gray-700">Mostra:</span>
+                                    <button
+                                        onClick={() => setStatusFilter('tutti')}
+                                        className={`px-3 py-1 rounded text-sm font-medium transition ${
+                                            statusFilter === 'tutti' 
+                                                ? 'bg-blue-500 text-white' 
+                                                : 'bg-white text-gray-700 hover:bg-gray-200'
+                                        }`}
+                                    >
+                                        Tutti ({Object.keys(groupedData).length})
+                                    </button>
+                                    <button
+                                        onClick={() => setStatusFilter('attivo')}
+                                        className={`px-3 py-1 rounded text-sm font-medium transition ${
+                                            statusFilter === 'attivo' 
+                                                ? 'bg-green-500 text-white' 
+                                                : 'bg-white text-gray-700 hover:bg-gray-200'
+                                        }`}
+                                    >
+                                        🟢 Attivi ({stateCounts.attivi})
+                                    </button>
+                                    <button
+                                        onClick={() => setStatusFilter('sospeso')}
+                                        className={`px-3 py-1 rounded text-sm font-medium transition ${
+                                            statusFilter === 'sospeso' 
+                                                ? 'bg-red-500 text-white' 
+                                                : 'bg-white text-gray-700 hover:bg-gray-200'
+                                        }`}
+                                    >
+                                        🔴 Sospesi ({stateCounts.sospesi})
+                                    </button>
+                                </div>
+                                
+                                {Object.keys(clientData).length > 0 && (
+                                    <button
+                                        onClick={() => setShowAllNotes(!showAllNotes)}
+                                        className="text-sm text-blue-600 hover:text-blue-800 underline"
+                                    >
+                                        {showAllNotes ? 'Nascondi archivio' : 'Vedi archivio'}
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Search */}
+                            <div className="flex space-x-4">
+                                <select
+                                    value={searchType}
+                                    onChange={(e) => setSearchType(e.target.value)}
+                                    className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="bdti">BDTI</option>
+                                    <option value="ragioneSociale">Ragione Sociale</option>
+                                    <option value="teamManager">Team Manager</option>
+                                    <option value="affiliato">Affiliato</option>
+                                </select>
+                                
+                                <div className="flex-1 relative">
+                                    <input
+                                        type="text"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        placeholder="Cerca..."
+                                        className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                    <i className="lucide lucide-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Token Input Modal */}
+                        {showTokenInput && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+                                    <h3 className="text-lg font-bold mb-4">Inserisci GitHub Token</h3>
+                                    <p className="text-sm text-gray-600 mb-4">
+                                        Per sincronizzare i dati, inserisci il tuo Personal Access Token di GitHub.
+                                    </p>
+                                    <input
+                                        type="password"
+                                        placeholder="ghp_..."
+                                        className="w-full p-3 border rounded-lg mb-4"
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter') {
+                                                saveGitHubToken(e.target.value);
+                                            }
+                                        }}
+                                    />
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={() => setShowTokenInput(false)}
+                                            className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                                        >
+                                            Annulla
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                const input = e.target.parentElement.previousElementSibling;
+                                                saveGitHubToken(input.value);
+                                            }}
+                                            className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                                        >
+                                            Salva
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Archivio */}
+                        {showAllNotes && (
+                            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                                <h2 className="text-xl font-bold text-gray-800 mb-4">📝 Archivio Completo</h2>
+                                <div className="space-y-3">
+                                    {Object.entries(clientData)
+                                        .filter(([_, data]) => data?.note || data?.affiliato || data?.stato)
+                                        .sort((a, b) => {
+                                            const dateA = new Date(a[1].lastModified || 0);
+                                            const dateB = new Date(b[1].lastModified || 0);
+                                            return dateB - dateA;
+                                        })
+                                        .map(([bdti, cData]) => {
+                                            const isActive = data.some(item => item.bdti === bdti);
+                                            const client = data.find(item => item.bdti === bdti);
+                                            return (
+                                                <div 
+                                                    key={bdti} 
+                                                    className={`p-4 rounded-lg border ${
+                                                        isActive ? 'bg-green-50 border-green-300' : 'bg-gray-50 border-gray-300'
+                                                    }`}
+                                                >
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <div>
+                                                            <span className="font-semibold text-gray-800">BDTI: {bdti}</span>
+                                                            {client && (
+                                                                <span className="ml-2 text-sm text-gray-600">
+                                                                    - {client.ragioneSociale}
+                                                                </span>
+                                                            )}
+                                                            {cData.stato === 'sospeso' && (
+                                                                <span className="ml-2 text-xs bg-red-500 text-white px-2 py-1 rounded">
+                                                                    🔴 Sospeso
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <button
+                                                            onClick={() => handleDeleteClientData(bdti)}
+                                                            className="text-red-500 hover:text-red-700"
+                                                        >
+                                                            <i className="lucide lucide-4 lucide-trash-2"></i>
+                                                        </button>
+                                                    </div>
+                                                    {cData.affiliato && (
+                                                        <p className="text-sm text-blue-600 mb-1">
+                                                            <strong>Affiliato:</strong> {cData.affiliato}
+                                                        </p>
+                                                    )}
+                                                    {cData.note && (
+                                                        <p className="text-gray-700 whitespace-pre-wrap">
+                                                            <strong>Note:</strong> {cData.note}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Results */}
+                        {Object.keys(groupedData).length > 0 ? (
+                            <div className="space-y-4">
+                                {Object.values(groupedData).map((group) => {
+                                    const stato = clientData[group.bdti]?.stato || 'attivo';
+                                    
+                                    return (
+                                        <div key={group.bdti} className="bg-white rounded-lg shadow-md p-6">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div>
+                                                    <div className="flex items-center gap-2">
+                                                        <h2 className="text-xl font-semibold text-gray-800">
+                                                            {group.ragioneSociale}
+                                                        </h2>
+                                                        {clientData[group.bdti] && (
+                                                            <div className="flex items-center text-green-600" title="Dati salvati">
+                                                                <i className="lucide lucide-4 lucide-user-check"></i>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-gray-600">BDTI: {group.bdti}</p>
+                                                    <p className="text-gray-600">Team Manager: {group.nomeTeamManager}</p>
+                                                    {clientData[group.bdti]?.affiliato && (
+                                                        <p className="text-blue-600 font-medium">
+                                                            Affiliato: {clientData[group.bdti].affiliato}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                
+                                                <div className="text-right">
+                                                    <p className="text-2xl font-bold text-red-600">
+                                                        € {group.totalDebt.toFixed(2)}
+                                                    </p>
+                                                    <div className="mt-2 text-lg font-semibold">
+                                                        {stato === 'sospeso' ? (
+                                                            <span className="text-red-600">🔴 SOSPESO</span>
+                                                        ) : (
+                                                            <span className="text-green-600">🟢 ATTIVO</span>
+                                                        )}
+                                                    </div>
+                                                    <button
+                                                        onClick={() => copyToClipboard(group)}
+                                                        className={`mt-2 flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
+                                                            selectedDebtor === group.bdti && copied
+                                                                ? 'bg-green-500 text-white'
+                                                                : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                                                        }`}
+                                                    >
+                                                        {selectedDebtor === group.bdti && copied ? (
+                                                            <>
+                                                                <i className="lucide lucide-check-circle"></i>
+                                                                <span>Copiato!</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <i className="lucide lucide-copy"></i>
+                                                                <span>Copia per WhatsApp</span>
+                                                            </>
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="border-t pt-4">
+                                                <h3 className="font-semibold text-gray-700 mb-2">Documenti:</h3>
+                                                <div className="space-y-2">
+                                                    {group.documents.map((doc, idx) => (
+                                                        <div key={idx} className="flex justify-between text-sm text-gray-600">
+                                                            <span>Doc. {doc.documento} del {doc.dataDocumento}</span>
+                                                            <span className="font-medium">€ {doc.debito.toFixed(2)}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                
+                                                <div className="mt-4 space-y-4">
+                                                    <div>
+                                                        <h3 className="font-semibold text-gray-700 mb-2">Stato Cliente:</h3>
+                                                        <select
+                                                            value={clientData[group.bdti]?.stato || 'attivo'}
+                                                            onChange={(e) => handleClientDataChange(group.bdti, 'stato', e.target.value)}
+                                                            className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium ${
+                                                                clientData[group.bdti]?.stato === 'sospeso' 
+                                                                    ? 'bg-red-50 border-red-300 text-red-700' 
+                                                                    : 'bg-green-50 border-green-300 text-green-700'
+                                                            }`}
+                                                        >
+                                                            <option value="attivo">🟢 Attivo</option>
+                                                            <option value="sospeso">🔴 Sospeso</option>
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <h3 className="font-semibold text-gray-700 mb-2">Affiliato:</h3>
+                                                        <input
+                                                            type="text"
+                                                            value={clientData[group.bdti]?.affiliato || ''}
+                                                            onChange={(e) => handleClientDataChange(group.bdti, 'affiliato', e.target.value)}
+                                                            placeholder="Nome e cognome affiliato..."
+                                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        />
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <div className="flex justify-between items-center mb-2">
+                                                            <h3 className="font-semibold text-gray-700">Note / Risposta cliente:</h3>
+                                                            {clientData[group.bdti]?.lastModified && (
+                                                                <span className="text-xs text-gray-500">
+                                                                    Ultima modifica: {clientData[group.bdti].lastModified}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <textarea
+                                                            value={clientData[group.bdti]?.note || ''}
+                                                            onChange={(e) => handleClientDataChange(group.bdti, 'note', e.target.value)}
+                                                            placeholder="Inserisci qui la risposta del cliente..."
+                                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                                                            rows="3"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <div className="bg-white rounded-lg shadow-md p-12 text-center">
+                                <p className="text-gray-500 text-lg">
+                                    {data.length === 0 
+                                        ? 'Carica un file Excel per iniziare'
+                                        : statusFilter !== 'tutti' 
+                                            ? `Nessun cliente ${statusFilter === 'sospeso' ? 'sospeso' : 'attivo'}`
+                                            : 'Nessun risultato trovato per la ricerca'}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<DebtManagementApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
