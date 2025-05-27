@@ -1,18 +1,4 @@
 {
-  "clientData": {
-    "RM1FC": {
-      "stato": "attivo",
-      "lastModified": "27/05/2025, 23:05",
-      "affiliato": "Claudio Professo"
-    },
-    "RMHI2": {
-      "affiliato": "Marco Lancia ",
-      "lastModified": "27/05/2025, 23:05"
-    },
-    "LTHCP": {
-      "note": "mail inviata con piano di rientro\n",
-      "lastModified": "27/05/2025, 23:06"
-    }
-  },
-  "lastSync": "2025-05-27T21:07:04.145Z"
+  "clientData": {},
+  "lastSync": "2025-05-27T21:08:26.717Z"
 }
