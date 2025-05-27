@@ -1,4 +1,83 @@
 {
-  "clientData": {},
-  "lastSync": "2025-05-27T21:32:51.072Z"
+  "clientData": {
+    "RM1FC": {
+      "stato": "attivo",
+      "lastModified": "27/05/2025, 23:17",
+      "affiliato": "Claudio Professo Castelverde ",
+      "note": "deve bonificare "
+    },
+    "LTHCP": {
+      "stato": "attivo",
+      "lastModified": "27/05/2025, 23:22",
+      "affiliato": "Carlo",
+      "note": "Mail con piano di rientro\nin merito alla partita 9060 del 29/04/25, ti informo che sto attendendo l'accredito di un bonifico e provvederò al saldo entro la prossima settimana."
+    },
+    "RMHLM": {
+      "stato": "attivo",
+      "lastModified": "27/05/2025, 23:23",
+      "affiliato": "Daniele Verde Rocca Priora",
+      "note": "Deve fare assegno circolare"
+    },
+    "RM1SD": {
+      "stato": "attivo",
+      "lastModified": "27/05/2025, 23:13"
+    },
+    "RMHI2": {
+      "affiliato": "Marco Lancia ",
+      "lastModified": "27/05/2025, 23:22",
+      "note": "il 30.05 scade assegno pagato febbraio e marzo Restano fuori da pagare Aprile e Maggio (ultima Fattura)",
+      "stato": "sospeso"
+    },
+    "FR2A9": {
+      "affiliato": "Giovanni",
+      "lastModified": "27/05/2025, 23:24",
+      "note": "con la presente sono a chiederti gentilmente di voler posticipare alla data del 16 c.m. l'addebito in conto della r.i.d. TECNOMEDIA relativa al periodo di Aprile 2025."
+    },
+    "RMHMS": {
+      "affiliato": "Sandro Marini",
+      "lastModified": "27/05/2025, 23:26",
+      "note": "Verifica e bonifica"
+    },
+    "RMCPM": {
+      "affiliato": "Sandro Marini",
+      "lastModified": "27/05/2025, 23:26",
+      "note": "Verifica e bonifica"
+    },
+    "RMHMH": {
+      "affiliato": "Raffaella ",
+      "lastModified": "27/05/2025, 23:27",
+      "note": "Bonificato"
+    },
+    "LTHFC": {
+      "affiliato": "Federica Colabattista",
+      "lastModified": "27/05/2025, 23:29",
+      "note": "Ti scrivo in merito alla mia situazione debitoria, che mi impegno a saldare se possibile entro il 15/06 senza staccare il sito se fosse possibile."
+    },
+    "RM1NS": {
+      "note": "",
+      "lastModified": "27/05/2025, 23:29",
+      "affiliato": ""
+    },
+    "FRHSA": {
+      "affiliato": "Vincenzo Valente ",
+      "lastModified": "27/05/2025, 23:28"
+    },
+    "RM1CC": {
+      "stato": "sospeso",
+      "lastModified": "27/05/2025, 23:29"
+    },
+    "RMHSN": {
+      "stato": "sospeso",
+      "lastModified": "27/05/2025, 23:29"
+    },
+    "RM1D2": {
+      "stato": "sospeso",
+      "lastModified": "27/05/2025, 23:30"
+    },
+    "RM1AO": {
+      "stato": "sospeso",
+      "lastModified": "27/05/2025, 23:30"
+    }
+  },
+  "lastSync": "2025-05-27T21:34:06.016Z"
 }
