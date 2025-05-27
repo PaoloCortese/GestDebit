@@ -1,25 +1,4 @@
 {
-  "clientData": {
-    "RM1FC": {
-      "stato": "attivo",
-      "lastModified": "27/05/2025, 23:17",
-      "affiliato": "Claudio Professo Castelverde ",
-      "note": "deve bonificare "
-    },
-    "LTHCP": {
-      "stato": "attivo",
-      "lastModified": "27/05/2025, 23:18",
-      "affiliato": "Carlo",
-      "note": "Mail con piano di rientro"
-    },
-    "RMHLM": {
-      "stato": "attivo",
-      "lastModified": "27/05/2025, 23:13"
-    },
-    "RM1SD": {
-      "stato": "attivo",
-      "lastModified": "27/05/2025, 23:13"
-    }
-  },
-  "lastSync": "2025-05-27T21:19:27.478Z"
+  "clientData": {},
+  "lastSync": "2025-05-27T21:19:57.505Z"
 }
