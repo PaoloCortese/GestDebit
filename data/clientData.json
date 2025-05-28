@@ -1,4 +1,15 @@
 {
-  "clientData": {},
-  "lastSync": "2025-05-28T14:14:28.905Z"
+  "clientData": {
+    "RM1FC": {
+      "affiliato": "Claudio Professo",
+      "lastModified": "28/05/2025, 17:10",
+      "note": "Bonifico Venerdi  30 VERIFICA"
+    },
+    "RMHI2": {
+      "affiliato": "Marco Lancia",
+      "lastModified": "28/05/2025, 17:10"
+    }
+  },
+  "lastSync": "2025-05-28T15:11:05.150Z",
+  "totalClients": 2
 }
