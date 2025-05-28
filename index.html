@@ -36,6 +36,8 @@
             const [showTokenInput, setShowTokenInput] = useState(false);
             const [syncing, setSyncing] = useState(false);
             const [lastSync, setLastSync] = useState(null);
+            const [syncError, setSyncError] = useState(null);
+            const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
 
             // GitHub config
             const GITHUB_OWNER = 'PaoloCortese';
@@ -44,9 +46,16 @@
 
             // Carica dati salvati all'avvio
             useEffect(() => {
+                // Prima carica SEMPRE i dati locali
                 const savedClientData = localStorage.getItem('clientData');
                 if (savedClientData) {
-                    setClientData(JSON.parse(savedClientData));
+                    try {
+                        const parsedData = JSON.parse(savedClientData);
+                        setClientData(parsedData);
+                        console.log('Dati locali caricati:', Object.keys(parsedData).length, 'clienti');
+                    } catch (e) {
+                        console.error('Errore caricamento dati locali:', e);
+                    }
                 }
                 
                 const savedToken = localStorage.getItem('githubToken');
@@ -58,14 +67,25 @@
                 if (savedLastSync) {
                     setLastSync(savedLastSync);
                 }
+
+                // Abilita autosalvataggio
+                const savedAutoSave = localStorage.getItem('autoSaveEnabled');
+                if (savedAutoSave !== null) {
+                    setAutoSaveEnabled(savedAutoSave === 'true');
+                }
             }, []);
 
-            // Salva dati cliente quando cambiano
+            // Salva dati cliente quando cambiano (con autosalvataggio)
             useEffect(() => {
-                if (Object.keys(clientData).length > 0) {
+                if (Object.keys(clientData).length > 0 && autoSaveEnabled) {
                     localStorage.setItem('clientData', JSON.stringify(clientData));
+                    console.log('Dati salvati localmente:', Object.keys(clientData).length, 'clienti');
+                    
+                    // Crea backup automatico
+                    const backupKey = `clientDataBackup_${new Date().toISOString().slice(0, 10)}`;
+                    localStorage.setItem(backupKey, JSON.stringify(clientData));
                 }
-            }, [clientData]);
+            }, [clientData, autoSaveEnabled]);
 
             // Applica filtri quando cambiano
             useEffect(() => {
@@ -108,7 +128,33 @@
                 setFilteredData(filtered);
             };
 
-            // Sincronizza con GitHub
+            // Funzione di backup prima della sincronizzazione
+            const createPreSyncBackup = () => {
+                const backupData = {
+                    clientData: clientData,
+                    timestamp: new Date().toISOString(),
+                    type: 'pre-sync-backup'
+                };
+                localStorage.setItem('preSyncBackup', JSON.stringify(backupData));
+                console.log('Backup pre-sincronizzazione creato');
+            };
+
+            // Funzione per ripristinare dal backup
+            const restoreFromBackup = () => {
+                const backup = localStorage.getItem('preSyncBackup');
+                if (backup) {
+                    try {
+                        const backupData = JSON.parse(backup);
+                        setClientData(backupData.clientData);
+                        localStorage.setItem('clientData', JSON.stringify(backupData.clientData));
+                        alert('Dati ripristinati dal backup!');
+                    } catch (e) {
+                        alert('Errore nel ripristino del backup');
+                    }
+                }
+            };
+
+            // Sincronizza con GitHub (MIGLIORATA)
             const syncWithGitHub = async (action = 'both') => {
                 if (!githubToken) {
                     setShowTokenInput(true);
@@ -116,10 +162,15 @@
                 }
                 
                 setSyncing(true);
+                setSyncError(null);
+                
+                // SEMPRE crea backup prima di sincronizzare
+                createPreSyncBackup();
                 
                 try {
                     if (action === 'download' || action === 'both') {
                         // Scarica da GitHub
+                        console.log('Scaricamento dati da GitHub...');
                         const response = await fetch(
                             `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`,
                             {
@@ -130,22 +181,55 @@
                             }
                         );
                         
-                        if (response.ok) {
-                            const file = await response.json();
-                            const content = JSON.parse(atob(file.content));
+                        if (!response.ok) {
+                            throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+                        }
+                        
+                        const file = await response.json();
+                        const content = JSON.parse(atob(file.content));
+                        
+                        if (content.clientData) {
+                            // Se ci sono dati locali non salvati, chiedi conferma
+                            const localDataCount = Object.keys(clientData).length;
+                            const remoteDataCount = Object.keys(content.clientData).length;
                             
-                            if (content.clientData) {
+                            if (localDataCount > 0 && action === 'download') {
+                                if (!confirm(`Vuoi sovrascrivere ${localDataCount} clienti locali con ${remoteDataCount} clienti da GitHub?`)) {
+                                    setSyncing(false);
+                                    return;
+                                }
+                            }
+                            
+                            // Se action è 'both', mergia i dati invece di sovrascrivere
+                            if (action === 'both') {
+                                const mergedData = { ...content.clientData };
+                                
+                                // Mantieni i dati locali più recenti
+                                Object.keys(clientData).forEach(bdti => {
+                                    if (!mergedData[bdti] || 
+                                        new Date(clientData[bdti].lastModified) > new Date(mergedData[bdti].lastModified || 0)) {
+                                        mergedData[bdti] = clientData[bdti];
+                                    }
+                                });
+                                
+                                setClientData(mergedData);
+                                localStorage.setItem('clientData', JSON.stringify(mergedData));
+                                console.log('Dati mergiati:', Object.keys(mergedData).length, 'clienti');
+                            } else {
                                 setClientData(content.clientData);
                                 localStorage.setItem('clientData', JSON.stringify(content.clientData));
+                                console.log('Dati scaricati:', Object.keys(content.clientData).length, 'clienti');
                             }
                         }
                     }
                     
                     if (action === 'upload' || action === 'both') {
                         // Carica su GitHub
+                        console.log('Caricamento dati su GitHub...');
                         const dataToSave = {
                             clientData: clientData,
-                            lastSync: new Date().toISOString()
+                            lastSync: new Date().toISOString(),
+                            totalClients: Object.keys(clientData).length
                         };
                         
                         // Prima ottieni il file attuale per avere lo SHA
@@ -176,24 +260,40 @@
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
-                                    message: `Sync data - ${new Date().toLocaleString('it-IT')}`,
+                                    message: `Sync data - ${new Date().toLocaleString('it-IT')} - ${Object.keys(clientData).length} clienti`,
                                     content: btoa(JSON.stringify(dataToSave, null, 2)),
                                     sha: sha || undefined
                                 })
                             }
                         );
                         
-                        if (updateResponse.ok) {
-                            const syncTime = new Date().toLocaleString('it-IT');
-                            setLastSync(syncTime);
-                            localStorage.setItem('lastSync', syncTime);
+                        if (!updateResponse.ok) {
+                            const errorData = await updateResponse.json();
+                            throw new Error(`Errore upload: ${errorData.message || updateResponse.statusText}`);
                         }
+                        
+                        const syncTime = new Date().toLocaleString('it-IT');
+                        setLastSync(syncTime);
+                        localStorage.setItem('lastSync', syncTime);
+                        console.log('Upload completato con successo');
                     }
                     
-                    alert('Sincronizzazione completata!');
+                    setSyncError(null);
+                    alert(`Sincronizzazione completata! ${Object.keys(clientData).length} clienti sincronizzati.`);
+                    
                 } catch (error) {
                     console.error('Errore sincronizzazione:', error);
-                    alert('Errore durante la sincronizzazione. Verifica il token e riprova.');
+                    setSyncError(error.message);
+                    
+                    // NON PERDERE I DATI!
+                    alert(`ERRORE SINCRONIZZAZIONE: ${error.message}\n\nI tuoi dati locali sono SALVI. Puoi continuare a lavorare offline.`);
+                    
+                    // Se il token è scaduto o non valido
+                    if (error.message.includes('401') || error.message.includes('403')) {
+                        if (confirm('Il token sembra non essere più valido. Vuoi inserirne uno nuovo?')) {
+                            setShowTokenInput(true);
+                        }
+                    }
                 } finally {
                     setSyncing(false);
                 }
@@ -201,10 +301,17 @@
 
             // Salva token GitHub
             const saveGitHubToken = (token) => {
+                if (!token || !token.startsWith('ghp_')) {
+                    alert('Token non valido. Deve iniziare con "ghp_"');
+                    return;
+                }
+                
                 setGithubToken(token);
                 localStorage.setItem('githubToken', token);
                 setShowTokenInput(false);
-                syncWithGitHub();
+                
+                // Prova a sincronizzare
+                syncWithGitHub('download'); // Prima scarica per non sovrascrivere dati remoti
             };
 
             // Gestione upload file
@@ -287,7 +394,8 @@
                 const exportData = {
                     clientData: clientData,
                     exportDate: new Date().toISOString(),
-                    version: '3.0'
+                    version: '3.1',
+                    totalClients: Object.keys(clientData).length
                 };
                 
                 const dataStr = JSON.stringify(exportData, null, 2);
@@ -311,10 +419,16 @@
                         const importedData = JSON.parse(e.target.result);
                         
                         if (importedData.clientData) {
+                            // Chiedi conferma se ci sono già dati
+                            if (Object.keys(clientData).length > 0) {
+                                if (!confirm(`Vuoi sovrascrivere i ${Object.keys(clientData).length} clienti attuali con ${Object.keys(importedData.clientData).length} clienti dal file?`)) {
+                                    return;
+                                }
+                            }
+                            
                             setClientData(importedData.clientData);
+                            alert(`Importati ${Object.keys(importedData.clientData).length} clienti con successo!`);
                         }
-                        
-                        alert('Dati importati con successo!');
                     } catch (error) {
                         alert('Errore nell\'importazione del file.');
                     }
@@ -393,9 +507,27 @@
                     <div className="max-w-7xl mx-auto">
                         {/* Header */}
                         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                            <h1 className="text-3xl font-bold text-gray-800 mb-4">
-                                Gestione Solleciti Debiti
-                            </h1>
+                            <div className="flex justify-between items-center mb-4">
+                                <h1 className="text-3xl font-bold text-gray-800">
+                                    Gestione Solleciti Debiti
+                                </h1>
+                                <div className="flex items-center space-x-2">
+                                    <span className="text-sm text-gray-600">Autosalvataggio:</span>
+                                    <button
+                                        onClick={() => {
+                                            setAutoSaveEnabled(!autoSaveEnabled);
+                                            localStorage.setItem('autoSaveEnabled', !autoSaveEnabled);
+                                        }}
+                                        className={`px-3 py-1 rounded text-sm font-medium ${
+                                            autoSaveEnabled 
+                                                ? 'bg-green-500 text-white' 
+                                                : 'bg-gray-300 text-gray-700'
+                                        }`}
+                                    >
+                                        {autoSaveEnabled ? 'ON' : 'OFF'}
+                                    </button>
+                                </div>
+                            </div>
                             
                             {/* File Management */}
                             <div className="flex items-center justify-between mb-6">
@@ -431,20 +563,32 @@
                                 
                                 <div className="flex items-center space-x-2">
                                     <button
-                                        onClick={() => syncWithGitHub()}
+                                        onClick={() => syncWithGitHub('upload')}
                                         className={`flex items-center space-x-2 ${syncing ? 'bg-gray-400' : 'bg-purple-500 hover:bg-purple-600'} text-white px-3 py-2 rounded-lg transition text-sm`}
                                         disabled={syncing}
+                                        title="Carica i dati locali su GitHub"
                                     >
-                                        <i className={`lucide lucide-4 ${syncing ? 'lucide-loader-2 animate-spin' : 'lucide-refresh-cw'}`}></i>
-                                        <span>{syncing ? 'Sincronizzando...' : 'Sincronizza'}</span>
+                                        <i className={`lucide lucide-4 ${syncing ? 'lucide-loader-2 animate-spin' : 'lucide-cloud-upload'}`}></i>
+                                        <span>Carica</span>
+                                    </button>
+                                    
+                                    <button
+                                        onClick={() => syncWithGitHub('download')}
+                                        className={`flex items-center space-x-2 ${syncing ? 'bg-gray-400' : 'bg-purple-500 hover:bg-purple-600'} text-white px-3 py-2 rounded-lg transition text-sm`}
+                                        disabled={syncing}
+                                        title="Scarica i dati da GitHub"
+                                    >
+                                        <i className={`lucide lucide-4 ${syncing ? 'lucide-loader-2 animate-spin' : 'lucide-cloud-download'}`}></i>
+                                        <span>Scarica</span>
                                     </button>
                                     
                                     <button
                                         onClick={exportAllData}
                                         className="flex items-center space-x-2 bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 transition text-sm"
+                                        title="Esporta backup locale"
                                     >
                                         <i className="lucide lucide-4 lucide-download"></i>
-                                        <span>Esporta</span>
+                                        <span>Backup</span>
                                     </button>
                                     
                                     <label className="flex items-center space-x-2 bg-blue-500 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition text-sm">
@@ -457,15 +601,36 @@
                                             className="hidden"
                                         />
                                     </label>
+                                    
+                                    {localStorage.getItem('preSyncBackup') && (
+                                        <button
+                                            onClick={restoreFromBackup}
+                                            className="flex items-center space-x-2 bg-orange-500 text-white px-3 py-2 rounded-lg hover:bg-orange-600 transition text-sm"
+                                            title="Ripristina ultimo backup"
+                                        >
+                                            <i className="lucide lucide-4 lucide-rotate-ccw"></i>
+                                            <span>Ripristina</span>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 
-                            {/* Sync Info */}
-                            {lastSync && (
-                                <div className="text-sm text-gray-600 mb-4">
-                                    Ultima sincronizzazione: {lastSync}
+                            {/* Status Info */}
+                            <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                                <div>
+                                    {lastSync && <span>Ultima sincronizzazione: {lastSync}</span>}
                                 </div>
-                            )}
+                                <div className="flex items-center space-x-4">
+                                    <span className="font-medium">
+                                        Dati locali: {Object.keys(clientData).length} clienti
+                                    </span>
+                                    {syncError && (
+                                        <span className="text-red-600">
+                                            ⚠️ Errore sync: {syncError}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
 
                             {/* Filters */}
                             <div className="flex space-x-4 mb-4">
@@ -547,6 +712,8 @@
                                     <h3 className="text-lg font-bold mb-4">Inserisci GitHub Token</h3>
                                     <p className="text-sm text-gray-600 mb-4">
                                         Per sincronizzare i dati, inserisci il tuo Personal Access Token di GitHub.
+                                        <br/><br/>
+                                        <strong>Nota:</strong> Se il token è scaduto, creane uno nuovo su GitHub.
                                     </p>
                                     <input
                                         type="password"
