@@ -1,4 +1,26 @@
 {
-  "clientData": {},
-  "lastSync": "2025-05-28T13:57:41.596Z"
+  "clientData": {
+    "RM1FC": {
+      "affiliato": "Claudio Professo Castelverde ",
+      "lastModified": "28/05/2025, 15:56",
+      "note": "Entro venerdÃ¬ bonifica. VERIFICA"
+    },
+    "RMHI2": {
+      "affiliato": "Marco Lancia ",
+      "lastModified": "28/05/2025, 15:57",
+      "note": "Il 30 devo pagare l'assegno (paga Febbraio Marzo) Posso pagarne un altra entro il 10 giugno (paga Maggio). VERIFICA"
+    },
+    "LTHCP": {
+      "affiliato": "Carlo Paluzzi",
+      "lastModified": "28/05/2025, 15:59",
+      "note": "MAIL in merito alla partita 9060 del 29/04/25, ti informo che sto attendendo l'accredito di un bonifico e provvederò al saldo entro la prossima settimana. VERIFICA"
+    },
+    "RMHPH": {
+      "stato": "sospeso",
+      "lastModified": "28/05/2025, 16:01",
+      "affiliato": "Massimo Ruggiero ",
+      "note": "Allora Paolo ho sentito Mimmo la fattura è solo una quella che scadeva a marzo ma da Milano gli dicono che devo saldare anche questa perchè ho ancora il discorso con Isola Sacra e mi fà cumulo. ASPETTIAMO BONIFICO CON QUELLA DI MAGGIO STA A DUE RISCHIO CHIUSURA AGENZIA"
+    }
+  },
+  "lastSync": "2025-05-28T14:01:45.794Z"
 }
