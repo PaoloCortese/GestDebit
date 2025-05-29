@@ -1,0 +1,37 @@
+{
+  "persistentData": {
+    "RM1FC": {
+      "affiliato": "Claudio Professo",
+      "note": "Bonifico venerdì",
+      "stato": "promessa",
+      "contatti": {
+        "voce": true
+      },
+      "dataPromessa": "2025-05-29",
+      "fonte": "",
+      "lastModified": "2025-05-29T17:43:09.254Z"
+    },
+    "RMHI2": {
+      "affiliato": "Marco Lancia",
+      "note": "Marco hanno emesso la fattura di maggio sei ha due sospeso il 30 come ti vuoi regolare? \" Il 30 devo pagare l'assegno Posso pagarne un altra entro il 10 giugno\"",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": "2025-06-10",
+      "fonte": "",
+      "lastModified": "2025-05-29T17:48:03.781Z"
+    },
+    "LTHCP": {
+      "affiliato": "Carlo Paluzzi",
+      "note": "in merito alla partita 9060 del 29/04/25, ti informo che sto attendendo l'accredito di un bonifico e provvederò al saldo entro la prossima settimana.",
+      "stato": "promessa",
+      "contatti": {},
+      "dataPromessa": "2025-06-06",
+      "fonte": "",
+      "lastModified": "2025-05-29T17:49:12.374Z"
+    }
+  },
+  "currentFile": " Sosp Giugno 25.xlsx",
+  "lastModified": "2025-05-29T18:03:12.522Z"
+}
