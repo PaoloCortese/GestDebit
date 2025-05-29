@@ -690,16 +690,7 @@
             
             let text = templates[selectedTemplate].text();
             
-            // Aggiungi metodi di contatto
-            if (persistent.contatti) {
-              const usedMethods = [];
-              if (persistent.contatti.whatsapp) usedMethods.push('WhatsApp');
-              if (persistent.contatti.mail) usedMethods.push('Mail');
-              if (persistent.contatti.voce) usedMethods.push('Voce');
-              if (usedMethods.length > 0) {
-                text += `\n\n*Contattato via:* ${usedMethods.join(', ')}`;
-              }
-            }
+            // Non aggiungere più i metodi di contatto nel messaggio
             
             return text;
           };
@@ -1736,9 +1727,9 @@
                     }`}
                   >
                     <option value="">Seleziona stato</option>
-                    <option value="pagato">✅ PAGATO</option>
-                    <option value="promessa">🤝 PROMESSA</option>
-                    <option value="sospeso">🚫 SOSPESO</option>
+                    <option value="pagato">Attivo Pagato (Verde)</option>
+                    <option value="promessa">Attivo Promessa (Giallo)</option>
+                    <option value="sospeso">Sospeso (Rosso)</option>
                   </select>
                   
                   {state === 'promessa' && (
