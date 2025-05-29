@@ -272,6 +272,7 @@
 
           // Aggiorna dati persistenti per BDTI
           const updatePersistentData = (bdti, field, value) => {
+            console.log('Aggiornamento stato:', { bdti, field, value });
             setPersistentData(prev => ({
               ...prev,
               [bdti]: {
@@ -1586,6 +1587,7 @@
                                 if (state !== 'promessa') {
                                   updatePersistentData(bdti, 'dataPromessa', null);
                                 }
+                                savePersistentData();
                               }}
                               handleContactMethodChange={(bdti, method, checked) => {
                                 const current = getPersistentDataForBDTI(bdti);
@@ -1615,6 +1617,7 @@
                             if (state !== 'promessa') {
                               updatePersistentData(bdti, 'dataPromessa', null);
                             }
+                            savePersistentData();
                           }}
                           handleContactMethodChange={(bdti, method, checked) => {
                             const current = getPersistentDataForBDTI(bdti);
@@ -1718,7 +1721,13 @@
                   </p>
                   <select
                     value={state || ''}
-                    onChange={(e) => handleStateChange(group.bdti, e.target.value)}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      console.log('Stato selezionato:', newValue);
+                      if (newValue !== '') {
+                        handleStateChange(group.bdti, newValue);
+                      }
+                    }}
                     className={`mt-2 px-3 py-1 rounded-lg border text-sm font-medium ${
                       state === 'pagato' ? 'bg-green-500 text-white border-green-600' :
                       state === 'promessa' ? 'bg-yellow-500 text-white border-yellow-600' :
