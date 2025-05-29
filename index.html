@@ -1718,45 +1718,59 @@
                   <p className="text-2xl font-bold text-red-600">
                     € {group.totalDebt.toFixed(2)}
                   </p>
-                  <select
-                    value={state || ''}
-                    onChange={(e) => {
-                      e.stopPropagation();
-                      const newValue = e.target.value;
-                      
-                      if (!newValue) return;
-                      
-                      // Aggiorna immediatamente lo stato locale e localStorage
-                      const newPersistentData = {
-                        ...persistentData,
-                        [group.bdti]: {
-                          ...getPersistentDataForBDTI(group.bdti),
-                          stato: newValue,
-                          dataPromessa: newValue === 'promessa' ? getPersistentDataForBDTI(group.bdti).dataPromessa : null,
-                          lastModified: new Date().toISOString()
-                        }
-                      };
-                      
-                      // Salva direttamente in localStorage
-                      localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
-                      
-                      // Ricarica la pagina per vedere i cambiamenti
-                      setTimeout(() => {
-                        window.location.reload();
-                      }, 100);
-                    }}
-                    className={`mt-2 px-3 py-1 rounded-lg border text-sm font-medium ${
-                      state === 'pagato' ? 'bg-green-500 text-white border-green-600' :
-                      state === 'promessa' ? 'bg-yellow-500 text-white border-yellow-600' :
-                      state === 'sospeso' ? 'bg-red-500 text-white border-red-600' :
-                      'bg-gray-100 border-gray-300'
-                    }`}
-                  >
-                    <option value="">Seleziona stato</option>
-                    <option value="pagato">🟢 ATTIVO PAGATO</option>
-                    <option value="promessa">🟡 ATTIVO PROMESSA</option>
-                    <option value="sospeso">🔴 SOSPESO</option>
-                  </select>
+                  
+                  {/* Pulsanti per stato */}
+                  <div className="mt-2 space-y-1">
+                    <button
+                      onClick={() => {
+                        handleStateChange(group.bdti, 'pagato');
+                      }}
+                      className={`w-full px-3 py-1 rounded-lg text-sm font-medium transition-all ${
+                        state === 'pagato'
+                          ? 'bg-green-500 text-white border-2 border-green-600 shadow-lg'
+                          : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-green-100'
+                      }`}
+                    >
+                      🟢 ATTIVO PAGATO
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        handleStateChange(group.bdti, 'promessa');
+                      }}
+                      className={`w-full px-3 py-1 rounded-lg text-sm font-medium transition-all ${
+                        state === 'promessa'
+                          ? 'bg-yellow-500 text-white border-2 border-yellow-600 shadow-lg'
+                          : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-yellow-100'
+                      }`}
+                    >
+                      🟡 ATTIVO PROMESSA
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        handleStateChange(group.bdti, 'sospeso');
+                      }}
+                      className={`w-full px-3 py-1 rounded-lg text-sm font-medium transition-all ${
+                        state === 'sospeso'
+                          ? 'bg-red-500 text-white border-2 border-red-600 shadow-lg'
+                          : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-red-100'
+                      }`}
+                    >
+                      🔴 SOSPESO
+                    </button>
+                    
+                    {state && (
+                      <button
+                        onClick={() => {
+                          handleStateChange(group.bdti, '');
+                        }}
+                        className="w-full px-3 py-1 rounded-lg text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                      >
+                        ✕ Rimuovi stato
+                      </button>
+                    )}
+                  </div>
                   
                   {state === 'promessa' && (
                     <div className="mt-2">
