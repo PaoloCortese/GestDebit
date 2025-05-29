@@ -272,7 +272,6 @@
 
           // Aggiorna dati persistenti per BDTI
           const updatePersistentData = (bdti, field, value) => {
-            console.log('Aggiornamento stato:', { bdti, field, value });
             setPersistentData(prev => ({
               ...prev,
               [bdti]: {
@@ -1722,11 +1721,29 @@
                   <select
                     value={state || ''}
                     onChange={(e) => {
+                      e.stopPropagation();
                       const newValue = e.target.value;
-                      console.log('Stato selezionato:', newValue);
-                      if (newValue !== '') {
-                        handleStateChange(group.bdti, newValue);
-                      }
+                      
+                      if (!newValue) return;
+                      
+                      // Aggiorna immediatamente lo stato locale e localStorage
+                      const newPersistentData = {
+                        ...persistentData,
+                        [group.bdti]: {
+                          ...getPersistentDataForBDTI(group.bdti),
+                          stato: newValue,
+                          dataPromessa: newValue === 'promessa' ? getPersistentDataForBDTI(group.bdti).dataPromessa : null,
+                          lastModified: new Date().toISOString()
+                        }
+                      };
+                      
+                      // Salva direttamente in localStorage
+                      localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
+                      
+                      // Ricarica la pagina per vedere i cambiamenti
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, 100);
                     }}
                     className={`mt-2 px-3 py-1 rounded-lg border text-sm font-medium ${
                       state === 'pagato' ? 'bg-green-500 text-white border-green-600' :
