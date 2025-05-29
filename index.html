@@ -1721,7 +1721,20 @@
                     <button
                       onClick={() => {
                         const newState = state === 'pagato' ? '' : 'pagato';
-                        handleStateChange(group.bdti, newState);
+                        
+                        // Aggiorna direttamente persistentData e localStorage
+                        const newPersistentData = {
+                          ...persistentData,
+                          [group.bdti]: {
+                            ...getPersistentDataForBDTI(group.bdti),
+                            stato: newState,
+                            dataPromessa: newState === 'promessa' ? getPersistentDataForBDTI(group.bdti).dataPromessa : null,
+                            lastModified: new Date().toISOString()
+                          }
+                        };
+                        
+                        localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
+                        window.location.reload();
                       }}
                       className={`flex-1 px-2 py-2 rounded-lg text-xs font-bold transition-all ${
                         state === 'pagato'
@@ -1735,7 +1748,20 @@
                     <button
                       onClick={() => {
                         const newState = state === 'promessa' ? '' : 'promessa';
-                        handleStateChange(group.bdti, newState);
+                        
+                        // Aggiorna direttamente persistentData e localStorage
+                        const newPersistentData = {
+                          ...persistentData,
+                          [group.bdti]: {
+                            ...getPersistentDataForBDTI(group.bdti),
+                            stato: newState,
+                            dataPromessa: newState === 'promessa' ? getPersistentDataForBDTI(group.bdti).dataPromessa : null,
+                            lastModified: new Date().toISOString()
+                          }
+                        };
+                        
+                        localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
+                        window.location.reload();
                       }}
                       className={`flex-1 px-2 py-2 rounded-lg text-xs font-bold transition-all ${
                         state === 'promessa'
@@ -1749,7 +1775,20 @@
                     <button
                       onClick={() => {
                         const newState = state === 'sospeso' ? '' : 'sospeso';
-                        handleStateChange(group.bdti, newState);
+                        
+                        // Aggiorna direttamente persistentData e localStorage
+                        const newPersistentData = {
+                          ...persistentData,
+                          [group.bdti]: {
+                            ...getPersistentDataForBDTI(group.bdti),
+                            stato: newState,
+                            dataPromessa: newState === 'promessa' ? getPersistentDataForBDTI(group.bdti).dataPromessa : null,
+                            lastModified: new Date().toISOString()
+                          }
+                        };
+                        
+                        localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
+                        window.location.reload();
                       }}
                       className={`flex-1 px-2 py-2 rounded-lg text-xs font-bold transition-all ${
                         state === 'sospeso'
