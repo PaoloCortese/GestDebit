@@ -9,28 +9,12 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Icone personalizzate usando Font Awesome */
-        .icon-upload::before { content: '\f093'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-trash::before { content: '\f1f8'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-copy::before { content: '\f0c5'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-check::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-file::before { content: '\f15b'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-note::before { content: '\f249'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-download::before { content: '\f019'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-search::before { content: '\f002'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-bell::before { content: '\f0f3'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-calendar::before { content: '\f073'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-chart::before { content: '\f080'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-clock::before { content: '\f017'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-cloud::before { content: '\f0c2'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-shield::before { content: '\f132'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-sync::before { content: '\f2f1'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-alert::before { content: '\f071'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-whatsapp::before { content: '\f232'; font-family: 'Font Awesome 6 Brands'; font-weight: 400; }
-        .icon-mail::before { content: '\f0e0'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .icon-phone::before { content: '\f095'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
+        /* Stili per le emoji */
+        .icon-text { 
+            font-size: 1.2em; 
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -219,19 +203,50 @@
             reader.onload = (e) => {
               try {
                 const imported = JSON.parse(e.target.result);
-                setData(imported.data || []);
-                setNotes(imported.notes || {});
-                setDebtorStates(imported.states || {});
-                setContactMethods(imported.contacts || {});
-                setFilteredData(imported.data || []);
-                saveLocalData();
+                
+                // Gestisci diversi formati di backup
+                if (imported.notes) {
+                  // Formato completo del backup
+                  setData(imported.data || []);
+                  setNotes(imported.notes || {});
+                  setDebtorStates(imported.states || {});
+                  setContactMethods(imported.contacts || {});
+                } else if (Array.isArray(Object.values(imported)[0])) {
+                  // Vecchio formato solo note
+                  setNotes(imported);
+                } else {
+                  // Prova a interpretare come backup di note
+                  const notesData = {};
+                  Object.keys(imported).forEach(key => {
+                    if (imported[key].text || imported[key].lastModified) {
+                      notesData[key] = imported[key];
+                    }
+                  });
+                  if (Object.keys(notesData).length > 0) {
+                    setNotes(notesData);
+                  }
+                }
+                
+                // Aggiorna i dati filtrati
+                if (imported.data) {
+                  setFilteredData(imported.data);
+                }
+                
+                // Salva immediatamente
+                setTimeout(() => {
+                  saveLocalData();
+                  window.location.reload(); // Ricarica per essere sicuri
+                }, 100);
+                
                 addHistoryEvent('Import', 'Dati importati da backup');
-                alert('Dati importati con successo!');
+                alert('Dati importati con successo! La pagina verrà ricaricata.');
               } catch (error) {
-                alert('Errore nell\'importazione del file.');
+                console.error('Errore import:', error);
+                alert('Errore nell\'importazione del file. Verifica il formato.');
               }
             };
             reader.readAsText(file);
+            e.target.value = ''; // Reset input file
           };
 
           // Ripristina ultimo backup
@@ -257,6 +272,42 @@
             } catch (error) {
               alert('Errore nel ripristino del backup.');
             }
+          };
+
+          // Esporta solo note
+          const exportNotesOnly = () => {
+            const dataStr = JSON.stringify(notes, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = `note_debiti_${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            addHistoryEvent('Export Note', 'Note esportate');
+          };
+
+          // Importa solo note
+          const importNotesOnly = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              try {
+                const imported = JSON.parse(e.target.result);
+                setNotes(imported);
+                saveLocalData();
+                addHistoryEvent('Import Note', 'Note importate');
+                alert('Note importate con successo!');
+                window.location.reload();
+              } catch (error) {
+                alert('Errore nell\'importazione delle note.');
+              }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
           };
 
           // Aggiungi evento allo storico
@@ -553,7 +604,7 @@
                 <div className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <i className="icon-chart"></i>
+                      <span className="icon-text">📊</span>
                       Dashboard Statistiche
                     </h2>
                     <button onClick={() => setShowDashboard(false)} className="text-2xl">&times;</button>
@@ -614,7 +665,7 @@
                 <div className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <i className="icon-calendar"></i>
+                      <span className="icon-text">📅</span>
                       Scadenzario
                     </h2>
                     <button onClick={() => setShowCalendar(false)} className="text-2xl">&times;</button>
@@ -656,7 +707,7 @@
                 <div className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
                   <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <i className="icon-clock"></i>
+                      <span className="icon-text">🕐</span>
                       Storico Azioni
                     </h2>
                     <button onClick={() => setShowHistory(false)} className="text-2xl">&times;</button>
@@ -728,28 +779,28 @@
                           className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                           title="Dashboard"
                         >
-                          <i className="icon-chart"></i>
+                          <span className="icon-text">📊</span>
                         </button>
                         <button
                           onClick={() => setShowCalendar(true)}
                           className="p-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600"
                           title="Calendario scadenze"
                         >
-                          <i className="icon-calendar"></i>
+                          <span className="icon-text">📅</span>
                         </button>
                         <button
                           onClick={() => setShowHistory(true)}
                           className="p-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
                           title="Storico azioni"
                         >
-                          <i className="icon-clock"></i>
+                          <span className="icon-text">🕐</span>
                         </button>
                         <button
                           onClick={() => setShowNotifications(!showNotifications)}
                           className="relative p-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                           title="Notifiche urgenti"
                         >
-                          <i className="icon-bell"></i>
+                          <span className="icon-text">🔔</span>
                           {urgentCount > 0 && (
                             <span className="absolute -top-2 -right-2 bg-yellow-500 text-xs w-5 h-5 rounded-full flex items-center justify-center">
                               {urgentCount}
@@ -765,7 +816,7 @@
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3 flex-wrap gap-2">
                         <label className="flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition">
-                          <i className="icon-upload"></i>
+                          <span className="icon-text">📤</span>
                           <span>Carica Excel</span>
                           <input
                             type="file"
@@ -778,7 +829,7 @@
                         {currentFile && (
                           <>
                             <div className="flex items-center space-x-2 text-gray-600 bg-gray-100 px-4 py-2 rounded-lg">
-                              <i className="icon-file"></i>
+                              <span className="icon-text">📄</span>
                               <span>{currentFile}</span>
                             </div>
                             
@@ -796,7 +847,7 @@
                               className="flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
                               title="Elimina tutti i dati"
                             >
-                              <i className="icon-trash"></i>
+                              <span className="icon-text">🗑️</span>
                               <span>Elimina Dati</span>
                             </button>
                           </>
@@ -809,7 +860,7 @@
                           className="flex items-center space-x-2 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 disabled:opacity-50"
                           title="Carica i tuoi dati su GitHub"
                         >
-                          <i className="icon-cloud"></i>
+                          <span className="icon-text">☁️</span>
                           <span>Carica</span>
                         </button>
                         
@@ -819,7 +870,7 @@
                           className="flex items-center space-x-2 bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 disabled:opacity-50"
                           title="Scarica dati da GitHub (sovrascrive i tuoi)"
                         >
-                          <i className="icon-download"></i>
+                          <span className="icon-text">📥</span>
                           <span>Scarica</span>
                         </button>
                         
@@ -828,12 +879,12 @@
                           className="flex items-center space-x-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
                           title="Crea backup locale"
                         >
-                          <i className="icon-shield"></i>
+                          <span className="icon-text">🛡️</span>
                           <span>Backup</span>
                         </button>
                         
                         <label className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-700">
-                          <i className="icon-file"></i>
+                          <span className="icon-text">📄</span>
                           <span>Importa</span>
                           <input
                             type="file"
@@ -848,7 +899,7 @@
                           className="flex items-center space-x-2 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
                           title="Ripristina ultimo backup"
                         >
-                          <i className="icon-sync"></i>
+                          <span className="icon-text">🔄</span>
                           <span>Ripristina</span>
                         </button>
                       </div>
@@ -864,7 +915,7 @@
                       </div>
                       {syncError && (
                         <div className="flex items-center gap-2 text-red-600">
-                          <i className="icon-alert"></i>
+                          <span className="icon-text">⚠️</span>
                           <span>Errore sync: {syncError}</span>
                         </div>
                       )}
@@ -940,7 +991,7 @@
                         placeholder="Cerca..."
                         className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
-                      <i className="icon-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                      <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</span>
                     </div>
 
                     <select
@@ -962,7 +1013,7 @@
                           className="flex items-center space-x-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
                           title="Export Excel completo"
                         >
-                          <i className="icon-download"></i>
+                          <span className="icon-text">📥</span>
                           <span>Excel</span>
                         </button>
                         <button
@@ -970,7 +1021,7 @@
                           className="flex items-center space-x-2 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
                           title="Export solo sospesi"
                         >
-                          <i className="icon-download"></i>
+                          <span className="icon-text">📥</span>
                           <span>Sospesi</span>
                         </button>
                       </div>
@@ -982,7 +1033,7 @@
                 {showNotifications && urgentCount > 0 && (
                   <div className="bg-red-50 border border-red-300 rounded-lg p-4 mb-6">
                     <div className="flex items-center gap-2 mb-2">
-                      <i className="icon-alert text-red-600"></i>
+                      <span className="icon-text text-red-600">⚠️</span>
                       <h3 className="font-bold text-red-800">Attenzione: {urgentCount} debiti urgenti!</h3>
                     </div>
                     <div className="space-y-2">
@@ -1001,7 +1052,29 @@
                 {/* Archivio Note */}
                 {showAllNotes && (
                   <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                    <h2 className="text-xl font-bold text-gray-800 mb-4">📝 Archivio Note</h2>
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-xl font-bold text-gray-800">📝 Archivio Note</h2>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={exportNotesOnly}
+                          className="flex items-center space-x-2 bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 text-sm"
+                          title="Esporta solo note"
+                        >
+                          <span className="icon-text">📥</span>
+                          <span>Esporta Note</span>
+                        </button>
+                        <label className="flex items-center space-x-2 bg-blue-500 text-white px-3 py-1 rounded-lg cursor-pointer hover:bg-blue-600 text-sm">
+                          <span className="icon-text">📤</span>
+                          <span>Importa Note</span>
+                          <input
+                            type="file"
+                            accept=".json"
+                            onChange={importNotesOnly}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+                    </div>
                     <div className="space-y-3">
                       {Object.entries(notes)
                         .filter(([_, note]) => note?.text)
@@ -1053,7 +1126,7 @@
                                   {group.ragioneSociale}
                                 </h2>
                                 {notes[group.bdti]?.text && (
-                                  <i className="icon-note text-green-600" title="Nota presente"></i>
+                                  <span className="icon-text text-green-600" title="Nota presente">📝</span>
                                 )}
                               </div>
                               <p className="text-gray-600">BDTI: {group.bdti}</p>
@@ -1090,12 +1163,12 @@
                               >
                                 {selectedDebtor === group.bdti && copied ? (
                                   <>
-                                    <i className="icon-check"></i>
+                                    <span className="icon-text">✅</span>
                                     <span>Copiato!</span>
                                   </>
                                 ) : (
                                   <>
-                                    <i className="icon-copy"></i>
+                                    <span className="icon-text">📋</span>
                                     <span>Copia per WhatsApp</span>
                                   </>
                                 )}
@@ -1124,7 +1197,7 @@
                                       checked={contactMethods[group.bdti]?.whatsapp || false}
                                       onChange={(e) => handleContactMethodChange(group.bdti, 'whatsapp', e.target.checked)}
                                     />
-                                    <i className="icon-whatsapp"></i>
+                                    <span className="icon-text">💬</span>
                                     <span className="text-sm">WhatsApp</span>
                                   </label>
                                   <label className="flex items-center gap-1 cursor-pointer">
@@ -1133,7 +1206,7 @@
                                       checked={contactMethods[group.bdti]?.mail || false}
                                       onChange={(e) => handleContactMethodChange(group.bdti, 'mail', e.target.checked)}
                                     />
-                                    <i className="icon-mail"></i>
+                                    <span className="icon-text">✉️</span>
                                     <span className="text-sm">Mail</span>
                                   </label>
                                   <label className="flex items-center gap-1 cursor-pointer">
@@ -1142,7 +1215,7 @@
                                       checked={contactMethods[group.bdti]?.voce || false}
                                       onChange={(e) => handleContactMethodChange(group.bdti, 'voce', e.target.checked)}
                                     />
-                                    <i className="icon-phone"></i>
+                                    <span className="icon-text">📞</span>
                                     <span className="text-sm">Voce</span>
                                   </label>
                                 </div>
