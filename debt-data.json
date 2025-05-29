@@ -7,9 +7,9 @@
       "contatti": {
         "voce": true
       },
-      "dataPromessa": "2025-05-29",
+      "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-29T17:43:09.254Z"
+      "lastModified": "2025-05-29T21:10:15.255Z"
     },
     "RMHI2": {
       "affiliato": "Marco Lancia",
@@ -20,18 +20,156 @@
       },
       "dataPromessa": "2025-06-10",
       "fonte": "",
-      "lastModified": "2025-05-29T17:48:03.781Z"
+      "lastModified": "2025-05-29T21:00:58.661Z"
     },
     "LTHCP": {
       "affiliato": "Carlo Paluzzi",
       "note": "in merito alla partita 9060 del 29/04/25, ti informo che sto attendendo l'accredito di un bonifico e provvederò al saldo entro la prossima settimana.",
       "stato": "promessa",
-      "contatti": {},
+      "contatti": {
+        "mail": true
+      },
       "dataPromessa": "2025-06-06",
       "fonte": "",
-      "lastModified": "2025-05-29T17:49:12.374Z"
+      "lastModified": "2025-05-29T18:04:04.635Z"
+    },
+    "RMHPH": {
+      "affiliato": "Massimo Ruggiero",
+      "note": "WhApp Allora Paolo ho sentito Mimmo la fattura è solo una quella che scadeva a marzo ma da Milano gli dicono che devo saldare anche questa perche ho ancora il discorso con Isola Sacra e mi fa cumulo.. ASPETTO BONIFICO  COMUNQUE SOSPESO 2 fatture con Maggio RISCHIO CHIUSURA",
+      "stato": "sospeso",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T20:47:54.514Z"
+    },
+    "RMHLM": {
+      "affiliato": "Andrea Verde",
+      "note": "Assegno Circolare lo porta in sede entro venerdi VERIFICA \nSentito Gianfranco Serio ATTENZIONE",
+      "stato": "promessa",
+      "contatti": {
+        "voce": true
+      },
+      "dataPromessa": "2025-05-30",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:01:39.518Z"
+    },
+    "LTHA1": {
+      "affiliato": "Marco Delfino",
+      "note": "Bonifico di Marzo OK",
+      "stato": "pagato",
+      "contatti": {},
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:25:07.167Z"
+    },
+    "FR2A9": {
+      "affiliato": "Giovanni Trupiano",
+      "note": "con la presente sono a chiederti gentilmente di voler posticipare alla data del 29 c.m. l'addebito in conto della r.i.d. TECNOMEDIA relativa al periodo di Aprile 2025. VERIFICA Posticipato al telefono di una settimana",
+      "stato": "promessa",
+      "contatti": {
+        "mail": true,
+        "voce": true
+      },
+      "dataPromessa": "2025-06-06",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:03:15.854Z"
+    },
+    "RM1SD": {
+      "affiliato": "Devid Simona Sanna",
+      "note": "WhApp Buongiorno, nella settimana che va tra il 9/6 ed il 15/6 l'insoluto verrà saldato mediante bonifico alle coordinate bancarie di Tecnomedia. VERIFICA",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": "2025-06-15",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:04:22.331Z"
+    },
+    "RM1B9": {
+      "affiliato": "Alessandro Donatone",
+      "note": "Scritto a Cocco Girato all'affiliato non ho avuto Risposta VERIFICA prima dei sospesi",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:08:39.309Z"
+    },
+    "RMHMS": {
+      "affiliato": "Sandro Marini",
+      "note": "Bonifico di Marzo OK",
+      "stato": "pagato",
+      "contatti": {
+        "voce": true
+      },
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:24:55.311Z"
+    },
+    "RM1LN": {
+      "affiliato": "Niubel Lahera",
+      "note": "Bonifico di Aprile OK",
+      "stato": "promessa",
+      "contatti": {},
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:25:55.497Z"
+    },
+    "RMCL3": {
+      "affiliato": "Niubel Lahera",
+      "note": "Bonifico di Aprile OK",
+      "stato": "",
+      "contatti": {},
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:26:23.264Z"
+    },
+    "RMCPM": {
+      "affiliato": "Sandro Marini",
+      "note": "Bonifico di Marzo OK",
+      "stato": "",
+      "contatti": {
+        "voce": true
+      },
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:24:37.536Z"
+    },
+    "RMHMH": {
+      "affiliato": "Raffaella Ciamacco",
+      "note": "Bonifico di Marzo OK",
+      "stato": "pagato",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:24:32.617Z"
+    },
+    "RMHFB": {
+      "affiliato": "Peppe Russo",
+      "note": "Bonifico di Marzo OK",
+      "stato": "",
+      "contatti": {},
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:26:34.915Z"
+    },
+    "RM1NS": {
+      "affiliato": "Federica Colabattista",
+      "note": "MAIL Ti scrivo in merito alla mia situazione debitoria, che mi impegno a saldare se possibile entro il 15/06 senza staccare il sito se fosse possibile.\nVERIFICA",
+      "stato": "promessa",
+      "contatti": {
+        "mail": true
+      },
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:27:04.704Z"
     }
   },
-  "currentFile": " Sosp Giugno 25.xlsx",
-  "lastModified": "2025-05-29T18:03:12.522Z"
+  "currentFile": null,
+  "lastModified": "2025-05-29T21:27:09.145Z"
 }
