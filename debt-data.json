@@ -7,9 +7,9 @@
       "contatti": {
         "voce": true
       },
-      "dataPromessa": null,
+      "dataPromessa": "2025-05-30",
       "fonte": "",
-      "lastModified": "2025-05-29T21:10:15.255Z"
+      "lastModified": "2025-05-29T21:42:29.850Z"
     },
     "RMHI2": {
       "affiliato": "Marco Lancia",
@@ -94,9 +94,9 @@
       "contatti": {
         "whatsapp": true
       },
-      "dataPromessa": null,
+      "dataPromessa": "2025-05-30",
       "fonte": "",
-      "lastModified": "2025-05-29T21:08:39.309Z"
+      "lastModified": "2025-05-29T21:42:49.618Z"
     },
     "RMHMS": {
       "affiliato": "Sandro Marini",
@@ -112,31 +112,31 @@
     "RM1LN": {
       "affiliato": "Niubel Lahera",
       "note": "Bonifico di Aprile OK",
-      "stato": "promessa",
+      "stato": "pagato",
       "contatti": {},
       "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-29T21:25:55.497Z"
+      "lastModified": "2025-05-29T21:43:01.948Z"
     },
     "RMCL3": {
       "affiliato": "Niubel Lahera",
       "note": "Bonifico di Aprile OK",
-      "stato": "",
+      "stato": "pagato",
       "contatti": {},
       "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-29T21:26:23.264Z"
+      "lastModified": "2025-05-29T21:35:18.132Z"
     },
     "RMCPM": {
       "affiliato": "Sandro Marini",
       "note": "Bonifico di Marzo OK",
-      "stato": "",
+      "stato": "pagato",
       "contatti": {
         "voce": true
       },
       "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-29T21:24:37.536Z"
+      "lastModified": "2025-05-29T21:35:35.936Z"
     },
     "RMHMH": {
       "affiliato": "Raffaella Ciamacco",
@@ -152,24 +152,166 @@
     "RMHFB": {
       "affiliato": "Peppe Russo",
       "note": "Bonifico di Marzo OK",
-      "stato": "",
+      "stato": "pagato",
       "contatti": {},
       "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-29T21:26:34.915Z"
+      "lastModified": "2025-05-29T21:35:55.299Z"
     },
     "RM1NS": {
+      "affiliato": "Niubel Lahera",
+      "note": "",
+      "stato": "pagato",
+      "contatti": {
+        "mail": false
+      },
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:38:04.796Z"
+    },
+    "RMHSN": {
+      "affiliato": "",
+      "note": "RISCHIO CHIUSURA",
+      "stato": "sospeso",
+      "contatti": {},
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:34:46.196Z"
+    },
+    "RM1CC": {
+      "affiliato": "Giuseppe Santagada",
+      "note": "",
+      "stato": "sospeso",
+      "contatti": {},
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:38:37.930Z"
+    },
+    "RM1D2": {
+      "affiliato": "Domenico Oliviero",
+      "note": "WhApp Ciao Paolo come anticipato telefonicamente ti chiedo gentilmente di non staccare il pacchetto pubblicitario in quanto entro venerdì prossimo provvedo al saldo di due fatture relative a marzo e aprile VERIFICA",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": "2025-06-06",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:43:44.772Z"
+    },
+    "RM1VB": {
+      "affiliato": "Valentin Babi",
+      "note": "WhApp due assegni resta solo maggio li ritira Bisonni Scadenze 20.06.25 05.07.25 VERIFICA RITIRO ABI",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": "2025-06-06",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:44:08.968Z"
+    },
+    "RM1AX": {
+      "affiliato": "Andrea Marrocco",
+      "note": "Avvisato chiede un po di tempo",
+      "stato": "pagato",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:40:05.444Z"
+    },
+    "RM1C4": {
+      "affiliato": "Gianfranco Milione",
+      "note": "WhApp Ciao Paolo sono Danilo il collega di Gianfranco Studio Fiamma Srl Per le due Tecnomedia saltate potrei farti due assegni, uno a fine giugno e uno metà luglio, se per te va bene OK VERIFICA QUANDO LI PORTA",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": "2025-06-06",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:44:31.495Z"
+    },
+    "RM1AO": {
+      "affiliato": "Luciano Pateani",
+      "note": "WhApp Ti dico solo che ho 3 pratiche molto grandi chiuse a viale angelico e sto avendo difficoltà a rientrarle sennò potrei anticipare tutto l’anno, grandi per dire grandi. \nMAIL Per RM1AO potrei pagarne una entro il 10/06/2025 e l'altra entro il 20/06/2025. VERIFICA\n",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true,
+        "mail": true
+      },
+      "dataPromessa": "2025-06-13",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:44:51.265Z"
+    },
+    "RM1LM": {
+      "affiliato": "Luciano Pateani",
+      "note": "WhApp Ti dico solo che ho 3 pratiche molto grandi chiuse a viale angelico e sto avendo difficoltà a rientrarle sennò potrei anticipare tutto l’anno, grandi per dire grandi\nMAIL  Riguardo RM1LM potrei pagarla entro il 16/06/2025, in caso di emissione di ulteriori fatture pagherei anche quella. VERIFICA\n",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true,
+        "mail": true
+      },
+      "dataPromessa": "2025-06-16",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:45:10.151Z"
+    },
+    "RMCID": {
+      "affiliato": "Gianfranco Milione",
+      "note": "WhApp Lemonia te ne posso pagare una domani e l’altra 15 mese di giugno VERIFICA RITIRO ASSEGNI",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": "2025-06-16",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:45:20.172Z"
+    },
+    "RMCFI": {
+      "affiliato": "Luca Mollo",
+      "note": "Bonifico Aprile",
+      "stato": "pagato",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": null,
+      "fonte": "",
+      "lastModified": "2025-05-29T21:41:41.847Z"
+    },
+    "RMCIA": {
+      "affiliato": "Gianfranco Milione",
+      "note": "MAIL - ‎ENTRO IL 5 GIUGNO 2025  BONIFICO PER 1 FATTURA BONIFICATO 29.05.25 OK                                                                                                                                                                - ‎ENTRO IL  25 GIUGNO 2025 BONIFICO PER 1 FATTURA \n- ‎ENTRO IL 5 LUGLIO 2025 BONIFICO PER 1 FATTURA      RIPRISTINO DELLA RID PER LA FATTURA  SCADENTE IL 5 LUGLIO 2025      VERIFICA",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true,
+        "mail": true
+      },
+      "dataPromessa": "2025-06-25",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:45:36.220Z"
+    },
+    "FRHSA": {
+      "affiliato": "Vincenzo Valente",
+      "note": "Passo io il 9 quando vado a ROMA AVVISALO e fatti mandare foto assegno OK scadenza 12.06.25",
+      "stato": "promessa",
+      "contatti": {
+        "whatsapp": true
+      },
+      "dataPromessa": "2025-06-08",
+      "fonte": "",
+      "lastModified": "2025-05-29T21:45:48.283Z"
+    },
+    "LTHFC": {
       "affiliato": "Federica Colabattista",
       "note": "MAIL Ti scrivo in merito alla mia situazione debitoria, che mi impegno a saldare se possibile entro il 15/06 senza staccare il sito se fosse possibile.\nVERIFICA",
       "stato": "promessa",
       "contatti": {
         "mail": true
       },
-      "dataPromessa": null,
+      "dataPromessa": "2025-06-13",
       "fonte": "",
-      "lastModified": "2025-05-29T21:27:04.704Z"
+      "lastModified": "2025-05-29T21:38:02.186Z"
     }
   },
-  "currentFile": null,
-  "lastModified": "2025-05-29T21:27:09.145Z"
+  "currentFile": " Sosp Giugno 25.xlsx",
+  "lastModified": "2025-05-29T21:46:55.232Z"
 }
