@@ -205,6 +205,22 @@
           // Carica dati iniziali
           useEffect(() => {
             loadPersistentData();
+            
+            // Carica dati Excel salvati
+            const savedExcelData = localStorage.getItem('debtExcelData');
+            const savedFileName = localStorage.getItem('currentFileName');
+            
+            if (savedExcelData && savedFileName) {
+              try {
+                const parsedData = JSON.parse(savedExcelData);
+                setData(parsedData);
+                setFilteredData(parsedData);
+                setCurrentFile(savedFileName);
+              } catch (error) {
+                console.error('Errore caricamento dati Excel salvati:', error);
+              }
+            }
+            
             checkPromiseAlerts();
           }, []);
 
@@ -250,6 +266,8 @@
               localStorage.setItem('debtPersistentData', JSON.stringify(persistentData));
               localStorage.setItem('debtPersistentBackup', JSON.stringify({
                 data: persistentData,
+                excelData: data,
+                currentFile,
                 timestamp: new Date().toISOString()
               }));
               addHistoryEvent('Salvataggio', 'Dati salvati localmente');
@@ -341,6 +359,7 @@
                   message: `Update debt data - ${new Date().toLocaleString('it-IT')}`,
                   content: btoa(unescape(encodeURIComponent(JSON.stringify({
                     persistentData,
+                    excelData: data,
                     currentFile,
                     lastModified: new Date().toISOString()
                   }, null, 2)))),
@@ -393,6 +412,19 @@
                 const content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
                 
                 setPersistentData(content.persistentData || {});
+                
+                // Carica anche i dati Excel se presenti
+                if (content.excelData) {
+                  setData(content.excelData);
+                  setFilteredData(content.excelData);
+                  localStorage.setItem('debtExcelData', JSON.stringify(content.excelData));
+                }
+                
+                if (content.currentFile) {
+                  setCurrentFile(content.currentFile);
+                  localStorage.setItem('currentFileName', content.currentFile);
+                }
+                
                 setLastSync(new Date().toLocaleString('it-IT'));
                 addHistoryEvent('Sync GitHub', 'Dati scaricati da GitHub');
                 
@@ -470,6 +502,11 @@
               setData(formattedData);
               setFilteredData(formattedData);
               setCurrentFile(file.name);
+              
+              // Salva dati Excel nel localStorage
+              localStorage.setItem('debtExcelData', JSON.stringify(formattedData));
+              localStorage.setItem('currentFileName', file.name);
+              
               savePersistentData();
               addHistoryEvent('File caricato', file.name);
               
@@ -527,7 +564,21 @@
           const exportToExcel = (onlySuspended = false) => {
             const exportData = [];
             
-            Object.values(groupedData).forEach(group => {
+            // Raggruppa i dati per BDTI
+            const tempGroupedData = data.reduce((acc, item) => {
+              if (!acc[item.bdti]) {
+                acc[item.bdti] = {
+                  ...item,
+                  documents: [],
+                  totalDebt: 0
+                };
+              }
+              acc[item.bdti].documents.push(item);
+              acc[item.bdti].totalDebt += parseFloat(item.debito) || 0;
+              return acc;
+            }, {});
+            
+            Object.values(tempGroupedData).forEach(group => {
               const persistent = getPersistentDataForBDTI(group.bdti);
               
               if (onlySuspended && persistent.stato !== 'sospeso') return;
@@ -572,6 +623,7 @@
           const createBackup = () => {
             const backupData = {
               persistentData,
+              excelData: data,
               currentFile,
               history,
               timestamp: new Date().toISOString()
@@ -602,6 +654,15 @@
                 if (imported.persistentData) {
                   setPersistentData(imported.persistentData);
                   savePersistentData();
+                  
+                  // Importa anche i dati Excel se presenti
+                  if (imported.excelData) {
+                    localStorage.setItem('debtExcelData', JSON.stringify(imported.excelData));
+                  }
+                  if (imported.currentFile) {
+                    localStorage.setItem('currentFileName', imported.currentFile);
+                  }
+                  
                   alert('✅ Backup importato con successo!');
                   window.location.reload();
                 } else {
@@ -626,6 +687,15 @@
               if (backup) {
                 const parsed = JSON.parse(backup);
                 setPersistentData(parsed.data);
+                
+                // Ripristina anche i dati Excel se presenti
+                if (parsed.excelData) {
+                  localStorage.setItem('debtExcelData', JSON.stringify(parsed.excelData));
+                }
+                if (parsed.currentFile) {
+                  localStorage.setItem('currentFileName', parsed.currentFile);
+                }
+                
                 alert('✅ Backup ripristinato!');
                 window.location.reload();
               } else {
@@ -646,43 +716,38 @@
               primo: {
                 name: 'Primo Sollecito',
                 text: () => {
-                  let text = `Gentile ${debtor.ragioneSociale},\n\n`;
-                  text += `Le scriviamo per ricordarle che risultano scaduti i seguenti documenti:\n\n`;
+                  let text = `Ciao per ${debtor.ragioneSociale} *Codice BDTI:* ${debtor.bdti}\n`;
+                  text += `ti ricordo che risultano insolute le fatture :\n`;
                   allDocuments.forEach(doc => {
                     text += `• Doc. ${doc.documento} del ${doc.dataDocumento} - € ${doc.debito.toFixed(2)}\n`;
                   });
-                  text += `\n*TOTALE: € ${totalDebt.toFixed(2)}*\n\n`;
-                  text += `La preghiamo di regolarizzare la sua posizione quanto prima.\n`;
-                  text += `Restiamo a disposizione per qualsiasi chiarimento.\n\n`;
-                  text += `Cordiali saluti`;
+                  text += `*TOTALE: € ${totalDebt.toFixed(2)}*\n\n`;
+                  text += `Resto a disposizione per qualsiasi chiarimento.\n`;
+                  text += `Grazie e buon lavoro`;
                   return text;
                 }
               },
               secondo: {
                 name: 'Secondo Sollecito',
                 text: () => {
-                  let text = `Ciao l'amministrazione ti ha scritto in merito all'insoluto una mail con il dettaglio del dovuto\n\n`;
+                  let text = `Ciao l'amministrazione ti ha scritto in merito all'insoluto una mail con il dettaglio del dovuto\n`;
                   text += `*Cliente:* ${debtor.ragioneSociale}\n`;
-                  text += `*Codice BDTI:* ${debtor.bdti}\n`;
-                  if (persistent.affiliato) {
-                    text += `*Affiliato:* ${persistent.affiliato}\n`;
-                  }
+                  text += `*Codice BDTI:* ${debtor.bdti}\n\n`;
                   text += `*Dettaglio documenti scaduti:*\n`;
                   allDocuments.forEach(doc => {
                     text += `• Doc. ${doc.documento} del ${doc.dataDocumento} - € ${doc.debito.toFixed(2)}\n`;
                   });
-                  text += `\n*TOTALE DEBITO: € ${totalDebt.toFixed(2)}*\n\n`;
-                  text += `mi fai sapere come regolarci per il saldo!! Se non mi dai riscontro a breve scatta la sospensione definitiva.`;
+                  text += `*TOTALE DEBITO: € ${totalDebt.toFixed(2)}*\n`;
+                  text += `Mi fai sapere come regolarci per il saldo!! Se non mi dai riscontro a breve scatta la sospensione definitiva. Grazie e buon lavoro.`;
                   return text;
                 }
               },
               conferma: {
                 name: 'Conferma Pagamento',
                 text: () => {
-                  let text = `Gentile ${debtor.ragioneSociale},\n\n`;
-                  text += `Abbiamo ricevuto il suo pagamento.\n`;
-                  text += `La ringraziamo per aver regolarizzato la sua posizione.\n\n`;
-                  text += `A presto!`;
+                  let text = `Grazie per ${debtor.ragioneSociale} *Codice BDTI:* ${debtor.bdti},\n`;
+                  text += `Abbiamo ricevuto il pagamento.\n`;
+                  text += `Buon lavoro`;
                   return text;
                 }
               }
@@ -1258,6 +1323,11 @@
                                     setFilteredData([]);
                                     setCurrentFile(null);
                                     setSelectedDebtor(null);
+                                    
+                                    // Rimuovi anche dal localStorage
+                                    localStorage.removeItem('debtExcelData');
+                                    localStorage.removeItem('currentFileName');
+                                    
                                     addHistoryEvent('Dati eliminati', 'Tutti i dati del foglio');
                                   }
                                 }}
@@ -1734,6 +1804,12 @@
                         };
                         
                         localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
+                        
+                        // Mostra conferma prima del reload
+                        const statoText = newState === 'pagato' ? 'ATTIVO PAGATO' : 'stato rimosso';
+                        console.log(`Stato cambiato a: ${statoText}`);
+                        
+                        // Ora il reload non fa perdere i dati perché sono salvati nel localStorage
                         window.location.reload();
                       }}
                       className={`flex-1 px-2 py-2 rounded-lg text-xs font-bold transition-all ${
@@ -1761,6 +1837,7 @@
                         };
                         
                         localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
+                        // Ora il reload non fa perdere i dati perché sono salvati nel localStorage
                         window.location.reload();
                       }}
                       className={`flex-1 px-2 py-2 rounded-lg text-xs font-bold transition-all ${
@@ -1788,6 +1865,7 @@
                         };
                         
                         localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
+                        // Ora il reload non fa perdere i dati perché sono salvati nel localStorage
                         window.location.reload();
                       }}
                       className={`flex-1 px-2 py-2 rounded-lg text-xs font-bold transition-all ${
