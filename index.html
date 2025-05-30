@@ -2,8 +2,26 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gestione Solleciti Debiti - Pro</title>
+    
+    <!-- PWA Meta Tags per iPad -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Gestione Debiti">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f5f5f7">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- Manifest per PWA -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiR2VzdGlvbmUgRGViaXRpIiwic2hvcnRfbmFtZSI6IkRlYml0aSIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwib3JpZW50YXRpb24iOiJwb3J0cmFpdCIsInN0YXJ0X3VybCI6Ii4iLCJ0aGVtZV9jb2xvciI6IiNmNWY1ZjciLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2Y1ZjVmNyJ9">
+    
+    <!-- Icona per Home Screen -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iNDAiIGZpbGw9IiMwMDdBRkYiLz4KPHBhdGggZD0iTTEyMCA2MEg2MEM1NC40NzcyIDYwIDUwIDY0LjQ3NzIgNTAgNzBWMTEwQzUwIDExNS41MjMgNTQuNDc3MiAxMjAgNjAgMTIwSDEyMEMxMjUuNTIzIDEyMCAxMzAgMTE1LjUyMyAxMzAgMTEwVjcwQzEzMCA2NC40NzcyIDEyNS41MjMgNjAgMTIwIDYwWiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTcwIDgwSDExMCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTcwIDkwSDEwMCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTcwIDEwMEg5NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+">
+    
+    <!-- Splash Screen -->
+    <link rel="apple-touch-startup-image" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzY4IiBoZWlnaHQ9IjEwMjQiIHZpZXdCb3g9IjAgMCA3NjggMTAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9Ijc2OCIgaGVpZ2h0PSIxMDI0IiBmaWxsPSIjZjVmNWY3Ii8+CjxyZWN0IHg9IjMzNCIgeT0iNDcyIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiByeD0iMjAiIGZpbGw9IiMwMDdBRkYiLz4KPHBhdGggZD0iTTM5NCA1MDJINDE0QzQxNi4yMDkgNTAyIDQxOCA1MDMuNzkxIDQxOCA1MDZWNTE4QzQxOCA1MjAuMjA5IDQxNi4yMDkgNTIyIDQxNCA1MjJIMzk0QzM5MS43OTEgNTIyIDM5MCA1MjAuMjA5IDM5MCA1MThWNTA2QzM5MCA1MDMuNzkxIDM5MS43OTEgNTAyIDM5NCA1MDJaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4=">
+    
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -158,6 +176,56 @@
             background-size: 16px;
             padding-right: 32px;
         }
+        
+        /* Ottimizzazioni per iPad */
+        @media (max-width: 1024px) {
+            body {
+                -webkit-user-select: none;
+                user-select: none;
+                -webkit-touch-callout: none;
+            }
+            
+            input, textarea {
+                -webkit-user-select: text;
+                user-select: text;
+                font-size: 16px; /* Previene zoom su focus */
+            }
+            
+            .mac-card {
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+            
+            /* Pulsanti più grandi su touch */
+            button {
+                min-height: 44px;
+            }
+            
+            /* Scrolling più fluido */
+            .overflow-y-auto {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        /* Nascondi scrollbar su iPad per look più pulito */
+        @supports (-webkit-touch-callout: none) {
+            ::-webkit-scrollbar {
+                display: none;
+            }
+        }
+        
+        /* Previeni bounce scroll su iOS */
+        html, body {
+            overscroll-behavior: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #root {
+            height: 100%;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
     </style>
 </head>
 <body>
@@ -166,6 +234,9 @@
         const { useState, useEffect, useRef } = React;
         
         const DebtManagementApp = () => {
+          // Rileva se siamo in modalità standalone (app da home screen)
+          const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+          
           // Stati principali
           const [data, setData] = useState([]);
           const [filteredData, setFilteredData] = useState([]);
@@ -201,6 +272,31 @@
           const [githubToken, setGithubToken] = useState(localStorage.getItem('githubToken') || '');
           const [githubRepo, setGithubRepo] = useState(localStorage.getItem('githubRepo') || '');
           const [showGithubConfig, setShowGithubConfig] = useState(false);
+
+          // Previeni pull-to-refresh su iOS
+          useEffect(() => {
+            let lastY = 0;
+            
+            const preventPullToRefresh = (e) => {
+              const scrollY = window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop;
+              
+              lastY = lastY || e.touches[0].clientY;
+              const y = e.touches[0].clientY;
+              const direction = y > lastY ? 'down' : 'up';
+              
+              if (scrollY === 0 && direction === 'down' && e.cancelable) {
+                e.preventDefault();
+              }
+              
+              lastY = y;
+            };
+            
+            document.addEventListener('touchmove', preventPullToRefresh, { passive: false });
+            
+            return () => {
+              document.removeEventListener('touchmove', preventPullToRefresh);
+            };
+          }, []);
 
           // Carica dati iniziali
           useEffect(() => {
@@ -1223,6 +1319,13 @@
 
           return (
             <div className="min-h-screen bg-gray-50">
+              {/* Banner installazione app per iPad */}
+              {!isStandalone && /iPad|iPhone|iPod/.test(navigator.userAgent) && (
+                <div className="bg-blue-600 text-white p-3 text-center text-sm">
+                  <p>📱 Installa come app: tocca <span className="font-bold">Condividi</span> → <span className="font-bold">Aggiungi a Home</span></p>
+                </div>
+              )}
+              
               <div className="max-w-7xl mx-auto p-4">
                 {/* Header */}
                 <div className="mac-card p-6 mb-6">
@@ -1257,7 +1360,7 @@
                         <div className="tooltip">
                           <button
                             onClick={() => setShowPromises(true)}
-                            className="relative p-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600"
+                            className="relative p-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 min-w-[44px] min-h-[44px]"
                           >
                             <span>🤝</span>
                             {overduePromisesCount > 0 && (
@@ -1812,7 +1915,7 @@
                         // Ora il reload non fa perdere i dati perché sono salvati nel localStorage
                         window.location.reload();
                       }}
-                      className={`flex-1 px-2 py-2 rounded-lg text-xs font-bold transition-all ${
+                      className={`flex-1 px-2 py-3 rounded-lg text-xs font-bold transition-all min-h-[44px] ${
                         state === 'pagato'
                           ? 'bg-green-500 text-white border-2 border-green-600 shadow-md'
                           : 'bg-white text-green-600 border border-green-500 hover:bg-green-50'
@@ -1840,7 +1943,7 @@
                         // Ora il reload non fa perdere i dati perché sono salvati nel localStorage
                         window.location.reload();
                       }}
-                      className={`flex-1 px-2 py-2 rounded-lg text-xs font-bold transition-all ${
+                      className={`flex-1 px-2 py-3 rounded-lg text-xs font-bold transition-all min-h-[44px] ${
                         state === 'promessa'
                           ? 'bg-yellow-500 text-white border-2 border-yellow-600 shadow-md'
                           : 'bg-white text-yellow-600 border border-yellow-500 hover:bg-yellow-50'
@@ -1868,7 +1971,7 @@
                         // Ora il reload non fa perdere i dati perché sono salvati nel localStorage
                         window.location.reload();
                       }}
-                      className={`flex-1 px-2 py-2 rounded-lg text-xs font-bold transition-all ${
+                      className={`flex-1 px-2 py-3 rounded-lg text-xs font-bold transition-all min-h-[44px] ${
                         state === 'sospeso'
                           ? 'bg-red-500 text-white border-2 border-red-600 shadow-md'
                           : 'bg-white text-red-600 border border-red-500 hover:bg-red-50'
