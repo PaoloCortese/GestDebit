@@ -2,14 +2,15 @@
   "persistentData": {
     "RM1FC": {
       "affiliato": "Claudio Professo",
-      "note": "Bonifico venerdì",
-      "stato": "promessa",
+      "note": "Bonifico venerdì OK FATTO",
+      "stato": "pagato",
       "contatti": {
-        "voce": true
+        "voce": true,
+        "whatsapp": true
       },
-      "dataPromessa": "2025-05-30",
+      "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-29T21:42:29.850Z"
+      "lastModified": "2025-06-07T09:59:45.019Z"
     },
     "RMHI2": {
       "affiliato": "Marco Lancia",
@@ -46,14 +47,14 @@
     },
     "RMHLM": {
       "affiliato": "Andrea Verde",
-      "note": "Assegno Circolare lo porta in sede entro venerdi VERIFICA \nSentito Gianfranco Serio ATTENZIONE",
-      "stato": "promessa",
+      "note": "Assegno Circolare lo porta in sede entro venerdi VERIFICA \nSentito Gianfranco Serio ATTENZIONE ASSEGNO CIRCOLARE OK ",
+      "stato": "pagato",
       "contatti": {
         "voce": true
       },
-      "dataPromessa": "2025-05-30",
+      "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-29T21:01:39.518Z"
+      "lastModified": "2025-06-07T10:00:58.550Z"
     },
     "LTHA1": {
       "affiliato": "Marco Delfino",
@@ -180,34 +181,37 @@
     },
     "RM1CC": {
       "affiliato": "Giuseppe Santagada",
-      "note": "",
-      "stato": "sospeso",
-      "contatti": {},
+      "note": "Bonifico Aprile fatto  MAIL Ti confermo che entro mercoledì 12 Giugno facciamo il bonifico  della fattura di marzo , mentre la fattura di maggio sarà pagata entro il 5 luglio.\n",
+      "stato": "pagato",
+      "contatti": {
+        "mail": true,
+        "whatsapp": true
+      },
       "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-29T21:38:37.930Z"
+      "lastModified": "2025-06-07T10:04:38.285Z"
     },
     "RM1D2": {
       "affiliato": "Domenico Oliviero",
-      "note": "WhApp Ciao Paolo come anticipato telefonicamente ti chiedo gentilmente di non staccare il pacchetto pubblicitario in quanto entro venerdì prossimo provvedo al saldo di due fatture relative a marzo e aprile VERIFICA",
-      "stato": "promessa",
+      "note": "WhApp Ciao Paolo come anticipato telefonicamente ti chiedo gentilmente di non staccare il pacchetto pubblicitario in quanto entro venerdì prossimo provvedo al saldo di due fatture relative a marzo e aprile VERIFICA. BONIFICO OK",
+      "stato": "pagato",
       "contatti": {
         "whatsapp": true
       },
-      "dataPromessa": "2025-06-06",
+      "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-29T21:43:44.772Z"
+      "lastModified": "2025-06-07T10:02:10.819Z"
     },
     "RM1VB": {
       "affiliato": "Valentin Babi",
       "note": "WhApp due assegni resta solo maggio li ritira Bisonni Scadenze 20.06.25 05.07.25 VERIFICA RITIRO ABI",
-      "stato": "promessa",
+      "stato": "pagato",
       "contatti": {
         "whatsapp": true
       },
-      "dataPromessa": "2025-06-06",
+      "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-29T21:44:08.968Z"
+      "lastModified": "2025-06-07T10:02:30.154Z"
     },
     "RM1AX": {
       "affiliato": "Andrea Marrocco",
@@ -292,13 +296,13 @@
     "FRHSA": {
       "affiliato": "Vincenzo Valente",
       "note": "Passo io il 9 quando vado a ROMA AVVISALO e fatti mandare foto assegno OK scadenza 12.06.25",
-      "stato": "promessa",
+      "stato": "pagato",
       "contatti": {
         "whatsapp": true
       },
-      "dataPromessa": "2025-06-08",
+      "dataPromessa": null,
       "fonte": "",
-      "lastModified": "2025-05-30T06:13:25.881Z"
+      "lastModified": "2025-06-07T10:03:02.377Z"
     },
     "LTHFC": {
       "affiliato": "Federica Colabattista",
@@ -1207,5 +1211,5 @@
     }
   ],
   "currentFile": " Sosp Giugno 25.xlsx",
-  "lastModified": "2025-05-30T06:16:58.386Z"
+  "lastModified": "2025-06-07T17:43:37.315Z"
 }
