@@ -3,30 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gestione Solleciti Debiti - Pro</title>
+    <title>GestDebit Pro - Firebase Edition</title>
     
     <!-- PWA Meta Tags per iPad -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Gestione Debiti">
+    <meta name="apple-mobile-web-app-title" content="GestDebit">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#f5f5f7">
     <meta name="format-detection" content="telephone=no">
     
     <!-- Manifest per PWA -->
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiR2VzdGlvbmUgRGViaXRpIiwic2hvcnRfbmFtZSI6IkRlYml0aSIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwib3JpZW50YXRpb24iOiJwb3J0cmFpdCIsInN0YXJ0X3VybCI6Ii4iLCJ0aGVtZV9jb2xvciI6IiNmNWY1ZjciLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2Y1ZjVmNyJ9">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiR2VzdERlYml0IFBybyIsInNob3J0X25hbWUiOiJHZXN0RGViaXQiLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsIm9yaWVudGF0aW9uIjoicG9ydHJhaXQiLCJzdGFydF91cmwiOiIuIiwidGhlbWVfY29sb3IiOiIjZjVmNWY3IiwiYmFja2dyb3VuZF9jb2xvciI6IiNmNWY1ZjcifQ==">
     
     <!-- Icona per Home Screen -->
     <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iNDAiIGZpbGw9IiMwMDdBRkYiLz4KPHBhdGggZD0iTTEyMCA2MEg2MEM1NC40NzcyIDYwIDUwIDY0LjQ3NzIgNTAgNzBWMTEwQzUwIDExNS41MjMgNTQuNDc3MiAxMjAgNjAgMTIwSDEyMEMxMjUuNTIzIDEyMCAxMzAgMTE1LjUyMyAxMzAgMTEwVjcwQzEzMCA2NC40NzcyIDEyNS41MjMgNjAgMTIwIDYwWiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTcwIDgwSDExMCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTcwIDkwSDEwMCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTcwIDEwMEg5NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+">
     
-    <!-- Splash Screen -->
-    <link rel="apple-touch-startup-image" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzY4IiBoZWlnaHQ9IjEwMjQiIHZpZXdCb3g9IjAgMCA3NjggMTAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9Ijc2OCIgaGVpZ2h0PSIxMDI0IiBmaWxsPSIjZjVmNWY3Ii8+CjxyZWN0IHg9IjMzNCIgeT0iNDcyIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiByeD0iMjAiIGZpbGw9IiMwMDdBRkYiLz4KPHBhdGggZD0iTTM5NCA1MDJINDE0QzQxNi4yMDkgNTAyIDQxOCA1MDMuNzkxIDQxOCA1MDZWNTE4QzQxOCA1MjAuMjA5IDQxNi4yMDkgNTIyIDQxNCA1MjJIMzk0QzM5MS43OTEgNTIyIDM5MCA1MjAuMjA5IDM5MCA1MThWNTA2QzM5MCA1MDMuNzkxIDM5MS43OTEgNTAyIDM5NCA1MDJaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4=">
-    
+    <!-- React e dipendenze -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Firebase SDK v10 -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Altri script -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <style>
         /* macOS Style Design */
         * {
@@ -230,11 +236,124 @@
 </head>
 <body>
     <div id="root"></div>
+    
     <script type="text/babel">
+        // Configurazione Firebase (le tue credenziali)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5poc13_3W35TOZFRyU1N5hdFCiRsoA20",
+            authDomain: "gestdebit.firebaseapp.com",
+            projectId: "gestdebit",
+            storageBucket: "gestdebit.firebasestorage.app",
+            messagingSenderId: "424705172159",
+            appId: "1:424705172159:web:92d2762f9690934d451c0a"
+        };
+
+        // Inizializza Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
         const { useState, useEffect, useRef } = React;
         
+        // Componente Login
+        const LoginForm = ({ onClose }) => {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [isLoading, setIsLoading] = useState(false);
+            const [error, setError] = useState('');
+            const [isRegistering, setIsRegistering] = useState(false);
+            
+            const handleSubmit = async () => {
+                if (!email || !password) return;
+                
+                setIsLoading(true);
+                setError('');
+                
+                try {
+                    if (isRegistering) {
+                        await auth.createUserWithEmailAndPassword(email, password);
+                    } else {
+                        await auth.signInWithEmailAndPassword(email, password);
+                    }
+                    onClose();
+                } catch (error) {
+                    setError(
+                        error.code === 'auth/user-not-found' ? 'Utente non trovato' :
+                        error.code === 'auth/wrong-password' ? 'Password errata' :
+                        error.code === 'auth/email-already-in-use' ? 'Email già registrata' :
+                        error.code === 'auth/weak-password' ? 'Password troppo debole (min 6 caratteri)' :
+                        error.code === 'auth/invalid-email' ? 'Email non valida' :
+                        'Errore di accesso'
+                    );
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            
+            return (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="mac-card max-w-md w-full p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-semibold flex items-center gap-2">
+                                <span>🔥</span>
+                                {isRegistering ? 'Registrati' : 'Accedi'} con Firebase
+                            </h2>
+                            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+                                ✕
+                            </button>
+                        </div>
+                        
+                        {error && (
+                            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+                                {error}
+                            </div>
+                        )}
+                        
+                        <div className="space-y-4">
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                className="w-full mac-input rounded-lg px-3 py-2"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+                            />
+                            <input
+                                type="password"
+                                placeholder="Password (min 6 caratteri)"
+                                className="w-full mac-input rounded-lg px-3 py-2"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+                            />
+                            
+                            <button
+                                onClick={handleSubmit}
+                                disabled={isLoading || !email || !password}
+                                className="w-full bg-blue-500 text-white rounded-lg py-3 font-medium disabled:opacity-50 hover:bg-blue-600"
+                            >
+                                {isLoading ? 'Elaborazione...' : (isRegistering ? 'Registrati' : 'Accedi')}
+                            </button>
+                            
+                            <button
+                                onClick={() => setIsRegistering(!isRegistering)}
+                                className="w-full text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                                {isRegistering ? 'Hai già un account? Accedi' : 'Non hai un account? Registrati'}
+                            </button>
+                        </div>
+                        
+                        <p className="mt-4 text-xs text-gray-500 text-center">
+                            I tuoi dati saranno sincronizzati automaticamente su tutti i dispositivi
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+        
+        // App principale
         const DebtManagementApp = () => {
-          // Rileva se siamo in modalità standalone (app da home screen)
+          // Rileva se siamo in modalità standalone
           const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
           
           // Stati principali
@@ -246,7 +365,7 @@
           const [copied, setCopied] = useState(false);
           const [selectedDebtor, setSelectedDebtor] = useState(null);
           
-          // Stati per dati persistenti (legati a BDTI)
+          // Stati per dati persistenti
           const [persistentData, setPersistentData] = useState({});
           
           // Stati UI
@@ -259,19 +378,17 @@
           const [history, setHistory] = useState([]);
           const [selectedTemplate, setSelectedTemplate] = useState('primo');
           const [filterStatus, setFilterStatus] = useState('all');
-          const [groupBy, setGroupBy] = useState('none'); // none, affiliato, teamManager
+          const [groupBy, setGroupBy] = useState('none');
           
-          // Stati per sincronizzazione
-          const [autoSave, setAutoSave] = useState(true);
+          // Stati Firebase
+          const [user, setUser] = useState(null);
+          const [showLogin, setShowLogin] = useState(false);
+          const [isOnline, setIsOnline] = useState(navigator.onLine);
+          const [isSyncing, setIsSyncing] = useState(false);
           const [lastSync, setLastSync] = useState(null);
           const [syncError, setSyncError] = useState(null);
-          const [isSyncing, setIsSyncing] = useState(false);
+          const [autoSave, setAutoSave] = useState(true);
           const [localDataCount, setLocalDataCount] = useState(0);
-          
-          // GitHub config
-          const [githubToken, setGithubToken] = useState(localStorage.getItem('githubToken') || '');
-          const [githubRepo, setGithubRepo] = useState(localStorage.getItem('githubRepo') || '');
-          const [showGithubConfig, setShowGithubConfig] = useState(false);
 
           // Previeni pull-to-refresh su iOS
           useEffect(() => {
@@ -298,25 +415,39 @@
             };
           }, []);
 
+          // Monitora auth Firebase
+          useEffect(() => {
+            const unsubscribe = auth.onAuthStateChanged((user) => {
+              setUser(user);
+              if (user) {
+                console.log('Utente autenticato:', user.email);
+                loadFromFirebase();
+              } else {
+                console.log('Utente non autenticato');
+                // Carica dati locali se non autenticato
+                loadLocalData();
+              }
+            });
+            
+            return () => unsubscribe();
+          }, []);
+
+          // Monitora connessione
+          useEffect(() => {
+            const handleOnline = () => setIsOnline(true);
+            const handleOffline = () => setIsOnline(false);
+            
+            window.addEventListener('online', handleOnline);
+            window.addEventListener('offline', handleOffline);
+            
+            return () => {
+              window.removeEventListener('online', handleOnline);
+              window.removeEventListener('offline', handleOffline);
+            };
+          }, []);
+
           // Carica dati iniziali
           useEffect(() => {
-            loadPersistentData();
-            
-            // Carica dati Excel salvati
-            const savedExcelData = localStorage.getItem('debtExcelData');
-            const savedFileName = localStorage.getItem('currentFileName');
-            
-            if (savedExcelData && savedFileName) {
-              try {
-                const parsedData = JSON.parse(savedExcelData);
-                setData(parsedData);
-                setFilteredData(parsedData);
-                setCurrentFile(savedFileName);
-              } catch (error) {
-                console.error('Errore caricamento dati Excel salvati:', error);
-              }
-            }
-            
             checkPromiseAlerts();
           }, []);
 
@@ -326,38 +457,129 @@
             setLocalDataCount(uniqueBdti.size);
           }, [data]);
 
-          // Auto-salvataggio
+          // Auto-salvataggio Firebase
           useEffect(() => {
-            if (autoSave && Object.keys(persistentData).length > 0) {
+            if (autoSave && user && isOnline && (Object.keys(persistentData).length > 0 || data.length > 0)) {
               const timer = setTimeout(() => {
-                savePersistentData();
-              }, 30000); // Ogni 30 secondi
+                saveToFirebase();
+              }, 5000); // Salva ogni 5 secondi
               return () => clearTimeout(timer);
             }
-          }, [persistentData, autoSave]);
+          }, [persistentData, data, user, isOnline, autoSave]);
 
           // Controlla alert promesse ogni minuto
           useEffect(() => {
             const interval = setInterval(() => {
               checkPromiseAlerts();
-            }, 60000); // Ogni minuto
+            }, 60000);
             return () => clearInterval(interval);
           }, [persistentData]);
 
-          // Carica dati persistenti da localStorage
-          const loadPersistentData = () => {
+          // Salva su Firebase
+          const saveToFirebase = async () => {
+            if (!user || !isOnline) return;
+            
+            setIsSyncing(true);
+            setSyncError(null);
+            
             try {
-              const saved = localStorage.getItem('debtPersistentData');
-              if (saved) {
-                setPersistentData(JSON.parse(saved));
-              }
+              await db.collection('users').doc(user.uid).set({
+                persistentData,
+                excelData: data,
+                currentFile,
+                history: history.slice(0, 100), // Salva ultimi 100 eventi
+                lastModified: firebase.firestore.FieldValue.serverTimestamp(),
+                userEmail: user.email
+              });
+              
+              setLastSync(new Date().toLocaleString('it-IT'));
+              console.log('Salvato su Firebase');
             } catch (error) {
-              console.error('Errore caricamento dati:', error);
+              setSyncError('Errore sincronizzazione Firebase');
+              console.error('Errore sync:', error);
+            } finally {
+              setIsSyncing(false);
             }
           };
 
-          // Salva dati persistenti
-          const savePersistentData = () => {
+          // Carica da Firebase
+          const loadFromFirebase = async () => {
+            if (!user) return;
+            
+            setIsSyncing(true);
+            setSyncError(null);
+            
+            try {
+              const doc = await db.collection('users').doc(user.uid).get();
+              
+              if (doc.exists) {
+                const firebaseData = doc.data();
+                
+                // Carica dati persistenti
+                if (firebaseData.persistentData) {
+                  setPersistentData(firebaseData.persistentData);
+                  localStorage.setItem('debtPersistentData', JSON.stringify(firebaseData.persistentData));
+                }
+                
+                // Carica dati Excel
+                if (firebaseData.excelData) {
+                  setData(firebaseData.excelData);
+                  setFilteredData(firebaseData.excelData);
+                  localStorage.setItem('debtExcelData', JSON.stringify(firebaseData.excelData));
+                }
+                
+                // Carica altri dati
+                if (firebaseData.currentFile) {
+                  setCurrentFile(firebaseData.currentFile);
+                  localStorage.setItem('currentFileName', firebaseData.currentFile);
+                }
+                
+                if (firebaseData.history) {
+                  setHistory(firebaseData.history);
+                }
+                
+                setLastSync(new Date().toLocaleString('it-IT'));
+                addHistoryEvent('Firebase Sync', 'Dati caricati dal cloud');
+              } else {
+                // Prima volta, carica dati locali se esistono
+                loadLocalData();
+              }
+            } catch (error) {
+              setSyncError('Errore caricamento da Firebase');
+              console.error('Errore load:', error);
+              // Fallback ai dati locali
+              loadLocalData();
+            } finally {
+              setIsSyncing(false);
+            }
+          };
+
+          // Carica dati locali
+          const loadLocalData = () => {
+            try {
+              // Carica dati persistenti
+              const savedPersistent = localStorage.getItem('debtPersistentData');
+              if (savedPersistent) {
+                setPersistentData(JSON.parse(savedPersistent));
+              }
+              
+              // Carica dati Excel
+              const savedExcelData = localStorage.getItem('debtExcelData');
+              const savedFileName = localStorage.getItem('currentFileName');
+              
+              if (savedExcelData && savedFileName) {
+                const parsedData = JSON.parse(savedExcelData);
+                setData(parsedData);
+                setFilteredData(parsedData);
+                setCurrentFile(savedFileName);
+              }
+            } catch (error) {
+              console.error('Errore caricamento dati locali:', error);
+            }
+          };
+
+          // Salva dati localmente (backup)
+          const saveLocalData = () => {
             try {
               localStorage.setItem('debtPersistentData', JSON.stringify(persistentData));
               localStorage.setItem('debtPersistentBackup', JSON.stringify({
@@ -366,9 +588,17 @@
                 currentFile,
                 timestamp: new Date().toISOString()
               }));
+              
+              if (data.length > 0) {
+                localStorage.setItem('debtExcelData', JSON.stringify(data));
+              }
+              if (currentFile) {
+                localStorage.setItem('currentFileName', currentFile);
+              }
+              
               addHistoryEvent('Salvataggio', 'Dati salvati localmente');
             } catch (error) {
-              console.error('Errore salvataggio:', error);
+              console.error('Errore salvataggio locale:', error);
             }
           };
 
@@ -394,6 +624,9 @@
                 lastModified: new Date().toISOString()
               }
             }));
+            
+            // Salva anche localmente
+            saveLocalData();
           };
 
           // Controlla alert promesse
@@ -430,128 +663,6 @@
             }
             
             return alertPromises;
-          };
-
-          // Upload su GitHub
-          const uploadToGitHub = async () => {
-            if (!githubToken || !githubRepo) {
-              setSyncError('Configura prima GitHub (token e repository)');
-              setShowGithubConfig(true);
-              return;
-            }
-
-            setIsSyncing(true);
-            setSyncError(null);
-
-            try {
-              const [owner, repo] = githubRepo.split('/');
-              const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/debt-data.json`, {
-                method: 'PUT',
-                headers: {
-                  'Authorization': `token ${githubToken}`,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  message: `Update debt data - ${new Date().toLocaleString('it-IT')}`,
-                  content: btoa(unescape(encodeURIComponent(JSON.stringify({
-                    persistentData,
-                    excelData: data,
-                    currentFile,
-                    lastModified: new Date().toISOString()
-                  }, null, 2)))),
-                  sha: await getFileSha(owner, repo)
-                })
-              });
-
-              if (response.ok) {
-                setLastSync(new Date().toLocaleString('it-IT'));
-                addHistoryEvent('Sync GitHub', 'Dati caricati su GitHub');
-              } else {
-                throw new Error('Errore upload GitHub');
-              }
-            } catch (error) {
-              setSyncError('Errore upload. Verifica token e repository.');
-              console.error('Errore sync:', error);
-            } finally {
-              setIsSyncing(false);
-            }
-          };
-
-          // Scarica da GitHub
-          const downloadFromGitHub = async () => {
-            if (!githubToken || !githubRepo) {
-              setSyncError('Configura prima GitHub');
-              setShowGithubConfig(true);
-              return;
-            }
-
-            if (!window.confirm('⚠️ Vuoi sovrascrivere i dati locali con quelli di GitHub?\n\nI tuoi dati attuali verranno sostituiti!')) {
-              return;
-            }
-
-            setIsSyncing(true);
-            setSyncError(null);
-
-            try {
-              // Prima fai backup
-              savePersistentData();
-
-              const [owner, repo] = githubRepo.split('/');
-              const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/debt-data.json`, {
-                headers: {
-                  'Authorization': `token ${githubToken}`
-                }
-              });
-
-              if (response.ok) {
-                const data = await response.json();
-                const content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-                
-                setPersistentData(content.persistentData || {});
-                
-                // Carica anche i dati Excel se presenti
-                if (content.excelData) {
-                  setData(content.excelData);
-                  setFilteredData(content.excelData);
-                  localStorage.setItem('debtExcelData', JSON.stringify(content.excelData));
-                }
-                
-                if (content.currentFile) {
-                  setCurrentFile(content.currentFile);
-                  localStorage.setItem('currentFileName', content.currentFile);
-                }
-                
-                setLastSync(new Date().toLocaleString('it-IT'));
-                addHistoryEvent('Sync GitHub', 'Dati scaricati da GitHub');
-                
-                alert('✅ Dati scaricati con successo!');
-                window.location.reload();
-              } else {
-                throw new Error('File non trovato su GitHub');
-              }
-            } catch (error) {
-              setSyncError('Errore download. Verifica che il file esista su GitHub.');
-              console.error('Errore sync:', error);
-            } finally {
-              setIsSyncing(false);
-            }
-          };
-
-          // Ottieni SHA del file per GitHub
-          const getFileSha = async (owner, repo) => {
-            try {
-              const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/debt-data.json`, {
-                headers: {
-                  'Authorization': `token ${githubToken}`
-                }
-              });
-              if (response.ok) {
-                const data = await response.json();
-                return data.sha;
-              }
-            } catch (error) {
-              return undefined;
-            }
           };
 
           // Gestione upload file Excel
@@ -599,15 +710,18 @@
               setFilteredData(formattedData);
               setCurrentFile(file.name);
               
-              // Salva dati Excel nel localStorage
-              localStorage.setItem('debtExcelData', JSON.stringify(formattedData));
-              localStorage.setItem('currentFileName', file.name);
+              // Salva localmente
+              saveLocalData();
               
-              savePersistentData();
               addHistoryEvent('File caricato', file.name);
               
               // Alert per promesse scadute
               checkPromiseAlerts();
+              
+              // Sync con Firebase se loggato
+              if (user) {
+                saveToFirebase();
+              }
             };
             reader.readAsArrayBuffer(file);
           };
@@ -656,11 +770,10 @@
             }
           };
 
-          // Export Excel completo
+          // Export Excel
           const exportToExcel = (onlySuspended = false) => {
             const exportData = [];
             
-            // Raggruppa i dati per BDTI
             const tempGroupedData = data.reduce((acc, item) => {
               if (!acc[item.bdti]) {
                 acc[item.bdti] = {
@@ -715,19 +828,20 @@
             addHistoryEvent('Export Excel', onlySuspended ? 'Solo sospesi' : 'Completo');
           };
 
-          // Backup completo
+          // Backup locale
           const createBackup = () => {
             const backupData = {
               persistentData,
               excelData: data,
               currentFile,
               history,
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
+              user: user?.email
             };
             
             const dataStr = JSON.stringify(backupData, null, 2);
             const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            const exportFileDefaultName = `backup_debiti_completo_${new Date().toISOString().slice(0,10)}.json`;
+            const exportFileDefaultName = `backup_debiti_${new Date().toISOString().slice(0,10)}.json`;
             
             const linkElement = document.createElement('a');
             linkElement.setAttribute('href', dataUri);
@@ -749,18 +863,30 @@
                 
                 if (imported.persistentData) {
                   setPersistentData(imported.persistentData);
-                  savePersistentData();
                   
-                  // Importa anche i dati Excel se presenti
                   if (imported.excelData) {
-                    localStorage.setItem('debtExcelData', JSON.stringify(imported.excelData));
+                    setData(imported.excelData);
+                    setFilteredData(imported.excelData);
                   }
+                  
                   if (imported.currentFile) {
-                    localStorage.setItem('currentFileName', imported.currentFile);
+                    setCurrentFile(imported.currentFile);
+                  }
+                  
+                  if (imported.history) {
+                    setHistory(imported.history);
+                  }
+                  
+                  // Salva tutto
+                  saveLocalData();
+                  
+                  // Sync con Firebase se loggato
+                  if (user) {
+                    saveToFirebase();
                   }
                   
                   alert('✅ Backup importato con successo!');
-                  window.location.reload();
+                  addHistoryEvent('Import', 'Backup importato');
                 } else {
                   alert('❌ Formato backup non valido');
                 }
@@ -774,7 +900,7 @@
 
           // Ripristina backup
           const restoreBackup = () => {
-            if (!window.confirm('⚠️ Ripristinare l\'ultimo backup?\n\nI dati attuali verranno persi!')) {
+            if (!window.confirm('⚠️ Ripristinare l\'ultimo backup locale?\n\nI dati attuali verranno persi!')) {
               return;
             }
 
@@ -784,16 +910,17 @@
                 const parsed = JSON.parse(backup);
                 setPersistentData(parsed.data);
                 
-                // Ripristina anche i dati Excel se presenti
                 if (parsed.excelData) {
-                  localStorage.setItem('debtExcelData', JSON.stringify(parsed.excelData));
+                  setData(parsed.excelData);
+                  setFilteredData(parsed.excelData);
                 }
+                
                 if (parsed.currentFile) {
-                  localStorage.setItem('currentFileName', parsed.currentFile);
+                  setCurrentFile(parsed.currentFile);
                 }
                 
                 alert('✅ Backup ripristinato!');
-                window.location.reload();
+                addHistoryEvent('Ripristino', 'Backup locale ripristinato');
               } else {
                 alert('❌ Nessun backup trovato');
               }
@@ -849,11 +976,7 @@
               }
             };
             
-            let text = templates[selectedTemplate].text();
-            
-            // Non aggiungere più i metodi di contatto nel messaggio
-            
-            return text;
+            return templates[selectedTemplate].text();
           };
 
           // Copia testo WhatsApp
@@ -876,7 +999,7 @@
               timestamp: new Date().toLocaleString('it-IT'),
               action,
               details,
-              user: 'Utente'
+              user: user?.email || 'Locale'
             };
             setHistory(prev => [event, ...prev].slice(0, 50));
           };
@@ -934,7 +1057,7 @@
               .sort((a, b) => b.giorniScaduti - a.giorniScaduti);
           };
 
-          // Dashboard Component
+          // Componenti Modal (Dashboard, Calendar, etc.)
           const Dashboard = () => {
             const stats = getStats();
             const topDebtors = Object.values(groupedData)
@@ -999,7 +1122,6 @@
             );
           };
 
-          // Vista Promesse
           const PromisesView = () => {
             const overduePromises = getOverduePromises();
             const upcomingPromises = Object.entries(persistentData)
@@ -1103,7 +1225,6 @@
             );
           };
 
-          // Calendar View
           const CalendarView = () => {
             const overdueDebts = data.filter(item => {
               const dueDate = new Date(item.dataScadenza);
@@ -1158,7 +1279,6 @@
             );
           };
 
-          // History View
           const HistoryView = () => {
             return (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -1194,75 +1314,6 @@
                     {history.length === 0 && (
                       <p className="text-center text-gray-500">Nessuna azione registrata</p>
                     )}
-                  </div>
-                </div>
-              </div>
-            );
-          };
-
-          // GitHub Config Modal
-          const GitHubConfigModal = () => {
-            const [tempToken, setTempToken] = useState(githubToken);
-            const [tempRepo, setTempRepo] = useState(githubRepo);
-
-            const saveConfig = () => {
-              setGithubToken(tempToken);
-              setGithubRepo(tempRepo);
-              localStorage.setItem('githubToken', tempToken);
-              localStorage.setItem('githubRepo', tempRepo);
-              setShowGithubConfig(false);
-              addHistoryEvent('Configurazione', 'GitHub configurato');
-            };
-
-            return (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                <div className="mac-card max-w-md w-full p-6">
-                  <h2 className="text-xl font-semibold mb-4">Configura GitHub</h2>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        GitHub Token
-                      </label>
-                      <input
-                        type="password"
-                        value={tempToken}
-                        onChange={(e) => setTempToken(e.target.value)}
-                        className="w-full mac-input rounded-lg px-3 py-2"
-                        placeholder="ghp_xxxxxxxxxxxx"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Crea su: github.com → Settings → Developer settings → Personal access tokens
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Repository (owner/nome)
-                      </label>
-                      <input
-                        type="text"
-                        value={tempRepo}
-                        onChange={(e) => setTempRepo(e.target.value)}
-                        className="w-full mac-input rounded-lg px-3 py-2"
-                        placeholder="username/repo-name"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-2 mt-6">
-                    <button
-                      onClick={saveConfig}
-                      className="flex-1 mac-button rounded-lg px-4 py-2 font-medium"
-                    >
-                      Salva
-                    </button>
-                    <button
-                      onClick={() => setShowGithubConfig(false)}
-                      className="flex-1 mac-button rounded-lg px-4 py-2 font-medium"
-                    >
-                      Annulla
-                    </button>
                   </div>
                 </div>
               </div>
@@ -1331,9 +1382,46 @@
                 <div className="mac-card p-6 mb-6">
                   <div className="flex justify-between items-center mb-4">
                     <h1 className="text-3xl font-bold text-gray-800">
-                      Gestione Solleciti Debiti
+                      GestDebit Pro
                     </h1>
                     <div className="flex items-center gap-4">
+                      {/* Firebase Status */}
+                      <div className="flex items-center gap-2">
+                        {isOnline ? (
+                          <span className="text-green-500">●</span>
+                        ) : (
+                          <span className="text-red-500">●</span>
+                        )}
+                        <span className="text-sm text-gray-600">
+                          {isOnline ? 'Online' : 'Offline'}
+                        </span>
+                      </div>
+                      
+                      {/* User Status */}
+                      {user ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-gray-600">🔥 {user.email}</span>
+                          <button
+                            onClick={() => {
+                              auth.signOut();
+                              addHistoryEvent('Logout', 'Disconnesso da Firebase');
+                            }}
+                            className="text-red-500 hover:text-red-700 text-sm"
+                          >
+                            Esci
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setShowLogin(true)}
+                          className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                        >
+                          <span>🔥</span>
+                          <span>Accedi</span>
+                        </button>
+                      )}
+                      
+                      {/* Autosave indicator */}
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-gray-600">Autosalvataggio:</span>
                         <button
@@ -1347,6 +1435,8 @@
                           {autoSave ? 'ON' : 'OFF'}
                         </button>
                       </div>
+                      
+                      {/* Action buttons */}
                       <div className="flex gap-2">
                         <div className="tooltip">
                           <button
@@ -1393,7 +1483,7 @@
                     </div>
                   </div>
                   
-                  {/* File Management e Sync */}
+                  {/* File Management */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center flex-wrap gap-2">
@@ -1421,53 +1511,61 @@
                             <div className="tooltip">
                               <button
                                 onClick={() => {
-                                  if (window.confirm('⚠️ Eliminare tutti i dati?\n\nQuesta azione non può essere annullata!')) {
+                                  if (window.confirm('⚠️ Eliminare tutti i dati Excel?\n\nI dati salvati (note, stati, affiliati) verranno mantenuti.')) {
                                     setData([]);
                                     setFilteredData([]);
                                     setCurrentFile(null);
-                                    setSelectedDebtor(null);
                                     
-                                    // Rimuovi anche dal localStorage
+                                    // Rimuovi dal localStorage
                                     localStorage.removeItem('debtExcelData');
                                     localStorage.removeItem('currentFileName');
                                     
-                                    addHistoryEvent('Dati eliminati', 'Tutti i dati del foglio');
+                                    addHistoryEvent('Dati eliminati', 'Dati Excel eliminati');
+                                    
+                                    // Salva su Firebase
+                                    if (user) {
+                                      saveToFirebase();
+                                    }
                                   }
                                 }}
                                 className="flex items-center gap-2 mac-button rounded-lg px-4 py-2 text-red-600"
                               >
                                 <span>🗑️</span>
-                                <span>Elimina Dati</span>
+                                <span>Elimina Excel</span>
                               </button>
-                              <span className="tooltiptext">Elimina tutti i dati</span>
+                              <span className="tooltiptext">Elimina dati Excel</span>
                             </div>
                           </>
                         )}
                         
-                        {/* Pulsanti Sync */}
-                        <div className="tooltip">
-                          <button
-                            onClick={uploadToGitHub}
-                            disabled={isSyncing}
-                            className="flex items-center gap-2 mac-button rounded-lg px-4 py-2 disabled:opacity-50"
-                          >
-                            <span>☁️</span>
-                            <span>Carica</span>
-                          </button>
-                          <span className="tooltiptext">Carica su GitHub</span>
-                        </div>
-                        
-                        <div className="tooltip">
-                          <button
-                            onClick={downloadFromGitHub}
-                            disabled={isSyncing}
-                            className="flex items-center gap-2 mac-button rounded-lg px-4 py-2 disabled:opacity-50"
-                          >
-                            <span>📥</span>
-                            <span>Scarica</span>
-                          </button>
-                          <span className="tooltiptext">Scarica da GitHub</span>
-                        </div>
+                        {/* Firebase Sync Buttons */}
+                        {user && (
+                          <>
+                            <div className="tooltip">
+                              <button
+                                onClick={saveToFirebase}
+                                disabled={isSyncing || !isOnline}
+                                className="flex items-center gap-2 mac-button rounded-lg px-4 py-2 disabled:opacity-50"
+                              >
+                                <span>☁️</span>
+                                <span>{isSyncing ? 'Sync...' : 'Salva Cloud'}</span>
+                              </button>
+                              <span className="tooltiptext">Salva su Firebase</span>
+                            </div>
+                            
+                            <div className="tooltip">
+                              <button
+                                onClick={loadFromFirebase}
+                                disabled={isSyncing || !isOnline}
+                                className="flex items-center gap-2 mac-button rounded-lg px-4 py-2 disabled:opacity-50"
+                              >
+                                <span>📥</span>
+                                <span>Carica Cloud</span>
+                              </button>
+                              <span className="tooltiptext">Carica da Firebase</span>
+                            </div>
+                          </>
+                        )}
                         
                         <div className="tooltip">
                           <button
@@ -1503,16 +1601,6 @@
                             <span>Ripristina</span>
                           </button>
                           <span className="tooltiptext">Ripristina ultimo backup</span>
-                        </div>
-                        
-                        <div className="tooltip">
-                          <button
-                            onClick={() => setShowGithubConfig(true)}
-                            className="flex items-center gap-2 mac-button rounded-lg px-4 py-2"
-                          >
-                            <span>⚙️</span>
-                          </button>
-                          <span className="tooltiptext">Configura GitHub</span>
                         </div>
                       </div>
                     </div>
@@ -1756,7 +1844,10 @@
                                 if (state !== 'promessa') {
                                   updatePersistentData(bdti, 'dataPromessa', null);
                                 }
-                                savePersistentData();
+                                // Salva su Firebase se loggato
+                                if (user) {
+                                  setTimeout(() => saveToFirebase(), 500);
+                                }
                               }}
                               handleContactMethodChange={(bdti, method, checked) => {
                                 const current = getPersistentDataForBDTI(bdti);
@@ -1786,7 +1877,10 @@
                             if (state !== 'promessa') {
                               updatePersistentData(bdti, 'dataPromessa', null);
                             }
-                            savePersistentData();
+                            // Salva su Firebase se loggato
+                            if (user) {
+                              setTimeout(() => saveToFirebase(), 500);
+                            }
                           }}
                           handleContactMethodChange={(bdti, method, checked) => {
                             const current = getPersistentDataForBDTI(bdti);
@@ -1830,7 +1924,7 @@
               {showPromises && <PromisesView />}
               {showCalendar && <CalendarView />}
               {showHistory && <HistoryView />}
-              {showGithubConfig && <GitHubConfigModal />}
+              {showLogin && <LoginForm onClose={() => setShowLogin(false)} />}
             </div>
           );
         };
@@ -1892,29 +1986,7 @@
                   {/* Pulsanti per stato */}
                   <div className="mt-3 flex gap-1">
                     <button
-                      onClick={() => {
-                        const newState = state === 'pagato' ? '' : 'pagato';
-                        
-                        // Aggiorna direttamente persistentData e localStorage
-                        const newPersistentData = {
-                          ...persistentData,
-                          [group.bdti]: {
-                            ...getPersistentDataForBDTI(group.bdti),
-                            stato: newState,
-                            dataPromessa: newState === 'promessa' ? getPersistentDataForBDTI(group.bdti).dataPromessa : null,
-                            lastModified: new Date().toISOString()
-                          }
-                        };
-                        
-                        localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
-                        
-                        // Mostra conferma prima del reload
-                        const statoText = newState === 'pagato' ? 'ATTIVO PAGATO' : 'stato rimosso';
-                        console.log(`Stato cambiato a: ${statoText}`);
-                        
-                        // Ora il reload non fa perdere i dati perché sono salvati nel localStorage
-                        window.location.reload();
-                      }}
+                      onClick={() => handleStateChange(group.bdti, state === 'pagato' ? '' : 'pagato')}
                       className={`flex-1 px-2 py-3 rounded-lg text-xs font-bold transition-all min-h-[44px] ${
                         state === 'pagato'
                           ? 'bg-green-500 text-white border-2 border-green-600 shadow-md'
@@ -1925,24 +1997,7 @@
                     </button>
                     
                     <button
-                      onClick={() => {
-                        const newState = state === 'promessa' ? '' : 'promessa';
-                        
-                        // Aggiorna direttamente persistentData e localStorage
-                        const newPersistentData = {
-                          ...persistentData,
-                          [group.bdti]: {
-                            ...getPersistentDataForBDTI(group.bdti),
-                            stato: newState,
-                            dataPromessa: newState === 'promessa' ? getPersistentDataForBDTI(group.bdti).dataPromessa : null,
-                            lastModified: new Date().toISOString()
-                          }
-                        };
-                        
-                        localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
-                        // Ora il reload non fa perdere i dati perché sono salvati nel localStorage
-                        window.location.reload();
-                      }}
+                      onClick={() => handleStateChange(group.bdti, state === 'promessa' ? '' : 'promessa')}
                       className={`flex-1 px-2 py-3 rounded-lg text-xs font-bold transition-all min-h-[44px] ${
                         state === 'promessa'
                           ? 'bg-yellow-500 text-white border-2 border-yellow-600 shadow-md'
@@ -1953,24 +2008,7 @@
                     </button>
                     
                     <button
-                      onClick={() => {
-                        const newState = state === 'sospeso' ? '' : 'sospeso';
-                        
-                        // Aggiorna direttamente persistentData e localStorage
-                        const newPersistentData = {
-                          ...persistentData,
-                          [group.bdti]: {
-                            ...getPersistentDataForBDTI(group.bdti),
-                            stato: newState,
-                            dataPromessa: newState === 'promessa' ? getPersistentDataForBDTI(group.bdti).dataPromessa : null,
-                            lastModified: new Date().toISOString()
-                          }
-                        };
-                        
-                        localStorage.setItem('debtPersistentData', JSON.stringify(newPersistentData));
-                        // Ora il reload non fa perdere i dati perché sono salvati nel localStorage
-                        window.location.reload();
-                      }}
+                      onClick={() => handleStateChange(group.bdti, state === 'sospeso' ? '' : 'sospeso')}
                       className={`flex-1 px-2 py-3 rounded-lg text-xs font-bold transition-all min-h-[44px] ${
                         state === 'sospeso'
                           ? 'bg-red-500 text-white border-2 border-red-600 shadow-md'
